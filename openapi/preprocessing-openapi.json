@@ -11,38 +11,25 @@
           "PreProcessing"
         ],
         "summary": "Does some preprocessing steps for on the NLP request such as downloading and parsing the OpenAPI document",
-        "parameters": [
-          {
-            "name": "OpenApiDocumentUrl",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string",
-              "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageProcessingRequest"
+              }
             },
-            "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
-          },
-          {
-            "name": "Sentence",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string",
-              "example": "show me all the photos in gallery 69234652"
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageProcessingRequest"
+              }
             },
-            "example": "show me all the photos in gallery 69234652"
-          },
-          {
-            "name": "Language",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string",
-              "example": "English"
-            },
-            "example": "English"
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageProcessingRequest"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -104,6 +91,30 @@
             "description": "",
             "nullable": true,
             "example": "The data received is invalid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NaturalLanguageProcessingRequest": {
+        "type": "object",
+        "properties": {
+          "openApiDocumentUrl": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
+          },
+          "sentence": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "show me all the photos in gallery 69234652"
+          },
+          "language": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "English"
           }
         },
         "additionalProperties": false
