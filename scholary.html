@@ -50,7 +50,7 @@
                The interface should be used to input a link of an OpenAPI and a query formultated in natural language.            
             </p>
             <p>
-               We will have a central API point that will play the role of the static delivery hub and of a gateway for the rest of the services. The service we will use are:
+               We will have a central API point that will play the role of the static delivery hub and of a gateway for the rest of the services. The services we will use are:
             <ul>
                <li>
                   <h4> Transalation Service </h4>
@@ -89,6 +89,18 @@
                Angular in order to create a responsive and modern user interface. 
             </p>
          </section>
+
+         <section id="arhitecture">
+            <h3> Arhitecture </h3>
+
+            <p>
+               <img src="diagrams/c4-system-diagram.png" alt="C4 diagram" >
+
+
+               
+            </p>
+         </section>
+
       </section>
       <section id="routes">
          <h2> API routes </h2>
@@ -97,18 +109,20 @@
             <p>
             <ul>
                <li>
-                  <b> GET : /NaturalLanguage </b>
+                  <b> POST : /proccess </b>
                   <ul>
                      <li>
-                        Querry parameters :
-                        <ul>
-                           <li> OpenApiSchemaUrl </li>
-                           <li> NaturalLanguageQuery </li>
-                           <li> NaturalLanguageQueryLanguage </li>
-                        </ul>
+                        Querry parameters : empty
                      </li>
                      <li>
-                        Body: empty
+                        Body: <code>
+                           {
+                              "openApiDocumentUrl": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json",
+                              "sentence": "show me all the photos in gallery 69234652",
+                              "language": "English"
+                            }
+
+                        </code>
                      </li>
                      <li>
                         Reasponse:
@@ -148,18 +162,21 @@
             <p>
             <ul>
                <li>
-                  <b>GET /PreProcessing </b>
+                  <b>POST /preprocess </b>
                   <ul>
                      <li>
-                        Querry parameters :
-                        <ul>
-                           <li> OpenApiSchemaUrl </li>
-                           <li> NaturalLanguageString </li>
-                           <li> </li>
+                        Querry parameters: empty
+                     
                         </ul>
                      </li>
                      <li>
-                        Body: empty
+                        Body: <code>
+                           {
+                              "openApiDocumentUrl": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json",
+                              "sentence": "show me all the photos in gallery 69234652",
+                              "language": "English"
+                            }
+                        </code>
                      </li>
                      <li>
                         Reasponse:
@@ -167,15 +184,15 @@
                            <li>
                               200 Success:
                               <code>
-                              {
-                              "openApiSchema": "string",
-                              "resources": [
-                              "string"
-                              ],
-                              "tokens": [
-                              "string"
-                              ]
-                              }
+                                 {
+                                    "openApiDocument": "string",
+                                    "resources": [
+                                      "string"
+                                    ],
+                                    "tokens": [
+                                      "string"
+                                    ]
+                                  }
                               </code>
                            </li>
                            <li>
@@ -198,17 +215,18 @@
             <p>
             <ul>
                <li>
-                  <b> GET /Translation </b>
+                  <b> POST /translate </b>
                   <ul>
                      <li>
-                        Querry parameters :
-                        <ul>
-                           <li> TextLanguage </li>
-                           <li> Text </li>
-                        </ul>
+                        Querry parameters: empty
                      </li>
                      <li>
-                        Body: empty
+                        Body: <code>
+                           {
+                              "textLanguage": "Romanian",
+                              "text": "Sper ca acest text sa fie tradus."
+                            }
+                        </code>
                      </li>
                      <li>
                         Reasponse:
@@ -241,7 +259,7 @@
             <p>
             <ul>
                <li>
-                  <b>POST: /Nlp </b>
+                  <b>POST: /proccess </b>
                   <ul>
                      <li>
                         Querry parameters: No parameters
@@ -250,7 +268,7 @@
                         Body:
                         <code>
                         {
-                        "openApiSchema": "string",
+                        "openApiDocument": "string",
                         "resources": [
                         "string"
                         ],
