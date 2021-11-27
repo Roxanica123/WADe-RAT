@@ -1,34 +1,49 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "api.nlp",
+    "title": "api.gateway",
     "version": "1.0"
   },
   "paths": {
-    "/Nlp": {
-      "post": {
+    "/NaturalLanguage": {
+      "get": {
         "tags": [
-          "Nlp"
+          "NaturalLanguage"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
-              }
+        "summary": "Query parameters composing the API Schema and the NL data sent by the user",
+        "operationId": "GetNaturalLanguageRequest",
+        "parameters": [
+          {
+            "name": "OpenApiSchemaUrl",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string",
+              "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
             },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
-              }
+            "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
+          },
+          {
+            "name": "NaturalLanguageQuery",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string",
+              "example": "show me all the photos in gallery 69234652"
             },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
-              }
-            }
+            "example": "show me all the photos in gallery 69234652"
+          },
+          {
+            "name": "NaturalLanguageQueryLanguage",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string",
+              "example": "English"
+            },
+            "example": "English"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -51,7 +66,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad input was sent to the API",
             "content": {
               "text/plain": {
                 "schema": {
@@ -69,6 +84,9 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "One of the services is temporarily unavailable"
           }
         }
       }
@@ -90,33 +108,6 @@
             "description": "",
             "nullable": true,
             "example": "The data received is invalid"
-          }
-        },
-        "additionalProperties": false
-      },
-      "NaturalLanguageRequestModel": {
-        "type": "object",
-        "properties": {
-          "openApiSchema": {
-            "type": "string",
-            "description": "The OpenApi Schema downloaded from the URL",
-            "nullable": true
-          },
-          "resources": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "A list of resources for example: photos, users, gallery",
-            "nullable": true
-          },
-          "tokens": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "A list of tokens extracted, for example: give, all, albums, name",
-            "nullable": true
           }
         },
         "additionalProperties": false
