@@ -3,7 +3,7 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-      <title>Scholarly HTML</title>
+      <title>RAT-Scholarly HTML</title>
       <link rel="stylesheet" href="https://w3c.github.io/scholarly-html/css/scholarly.css">
       <script src="https://w3c.github.io/scholarly-html/js/scholarly.min.js"></script>
 
@@ -42,20 +42,20 @@
             <p class="info">Develop a Web tool (framework) using natural language constructs to interact to a <a href="https://github.com/marmelab/awesome-rest" title="A collaborative list of resources about REST APIs">REST API</a>. The tool will (re)use knowledge model(s) to learn the proper concepts exposed by the <a href="https://www.openapis.org/" title="About OpenAPI">OpenAPI</a> document describing this API (e.g., resources, their inputs and outputs) to facilitate a proper text/voice-based interaction. Test and demonstrate the system's features by choosing minimum two <a href="https://apis.guru/browse-apis/" title="A list of public REST APIs">public REST APIs</a>. Inspiration: <a href="https://naturalsql.com/" title="Details">Photon</a> (article: <a href="https://arxiv.org/abs/2007.15280" title="Read the article">A Robust Cross-Domain Text-to-SQL System</a>). Bonus: provide multi-lingual support.</p>
          </section>
          <section typeof="sa:Propoused_solution" id="Propoused_solution">
-            <h3>Propoused solution</h3>
+            <h3>Proposed solution</h3>
             <p>
                We propose a multi-service application which will aggregate a multitude of micro-service and will provide a user-friendly interface. 
             </p>
             <p>
-               The interface should be used to input a link of an OpenAPI and a query formultated in natural language.            
+               The interface should be used to input a link of an OpenAPI and a sentence that describes the wanted interaction with the specified API.            
             </p>
             <p>
                We will have a central API point that will play the role of the static delivery hub and of a gateway for the rest of the services. The services we will use are:
             <ul>
                <li>
-                  <h4> Transalation Service </h4>
+                  <h4> Translation Service </h4>
                   <p>
-                     Will take the natural language query and will translate it to english. English is language used in most OpenAPi descriptions.
+                     Will take the natural language query and will translate it to english. English is the language used in most OpenAPi descriptions.
                   </p>
                </li>
                <li>
@@ -67,7 +67,7 @@
                <li>
                   <h4> NaturalLanguage Service </h4>
                   <p>
-                     Will use the information provided by Translation Service and Preprocessing Service in order  to compute a query. We will try to use the knowledge we have in order to create a API call and return it to the user.
+                     Will use the information provided by Translation Service and Preprocessing Service in order  to compute a query. We will try to use the knowledge we have in order to create an API call and return it to the user.
                   </p>
                </li>
             </ul>
@@ -86,19 +86,34 @@
             <h4> JavaScript </h4>
             <p>
                We chose JavaScript for the front-end part of the application. We intend to use a JS framework called
-               Angular in order to create a responsive and modern user interface. 
+               Angular in order to create a responsive and modern user interface.
+            </p>
+            <h4> Typescript </h4>
+            <p>
+               Additionally, for the services that do not require additional processing libraries, we opted for Typescript for all the JavaScript benefits but with 
+               the addition of readability and reliability provided by the support for types.
             </p>
          </section>
 
          <section id="arhitecture">
-            <h3> Arhitecture </h3>
-
+            <h3> Architecture </h3>
+            <p>The application of our application can be seen in the image below. </p>
             <p>
-               <img src="diagrams/c4-system-diagram.png" alt="C4 diagram" >
-
-
-               
+               <img src="diagrams/c4-system-diagram.png" alt="C4 diagram" width="100%">
             </p>
+               <h4> Angular Frontend application</h4>
+               <p> The user will interact with an Angular front-end application where he/she can specify the link to an OpenAPI document and the sentence that describes the wanted
+               interaction with the specified API. </p>
+               <h4> API Gateway</h4>
+               <p>The front-end application will send the request to an orchestration service. This service, contained in a Typescript Azure Function, is responsible for managing the execution steps of our proposed solution.</p>
+               <p>
+                  <img src="diagrams/uml-gateway.png" alt="gateway UML diagram" width="100%">
+               </p>
+               <h4> Translation Service</h4>
+               <p>If the translation of the sentence is required, it will send a request to the translation service, also a Typescript Azure Function, that will directly interact with the Google Translate API and translate the sentence.</p>
+               <h4> Preprocessing and Natural Language Processing services</h4>
+               <p>After translation, the orchestration service interacts with the preprocessing service and then the processing service in order to transform the input into the wanted request, both Python Azure Functions. </p>
+
          </section>
 
       </section>
@@ -109,10 +124,10 @@
             <p>
             <ul>
                <li>
-                  <b> POST : /proccess </b>
+                  <b> POST : /process </b>
                   <ul>
                      <li>
-                        Querry parameters : empty
+                        Query parameters : empty
                      </li>
                      <li>
                         Body: <code>
@@ -125,7 +140,7 @@
                         </code>
                      </li>
                      <li>
-                        Reasponse:
+                        Response:
                         <ul>
                            <li>
                               200 Success:
@@ -165,7 +180,7 @@
                   <b>POST /preprocess </b>
                   <ul>
                      <li>
-                        Querry parameters: empty
+                        Query parameters: empty
                      
                         </ul>
                      </li>
@@ -179,7 +194,7 @@
                         </code>
                      </li>
                      <li>
-                        Reasponse:
+                        Response:
                         <ul>
                            <li>
                               200 Success:
@@ -210,15 +225,15 @@
                </li>
             </ul>
          </section>
-         <section id="Transalation_API">
-            <h3> Transalation API</h3>
+         <section id="Translation_API">
+            <h3> Translation API</h3>
             <p>
             <ul>
                <li>
                   <b> POST /translate </b>
                   <ul>
                      <li>
-                        Querry parameters: empty
+                        Query parameters: empty
                      </li>
                      <li>
                         Body: <code>
@@ -229,7 +244,7 @@
                         </code>
                      </li>
                      <li>
-                        Reasponse:
+                        Response:
                         <ul>
                            <li>
                               200 Success:
@@ -254,15 +269,15 @@
                </li>
             </ul>
          </section>
-         <section id="NaturalLanguageProccesing_API">
-            <h3> NaturalLanguageProccesing API</h3>
+         <section id="NaturalLanguageProcessing_API">
+            <h3> NaturalLanguageProcessing API</h3>
             <p>
             <ul>
                <li>
-                  <b>POST: /proccess </b>
+                  <b>POST: /process </b>
                   <ul>
                      <li>
-                        Querry parameters: No parameters
+                        Query parameters: No parameters
                      </li>
                      <li>
                         Body:
@@ -279,7 +294,7 @@
                         </code>
                      </li>
                      <li>
-                        Reasponse:
+                        Response:
                         <ul>
                            <li>
                               200 Success:
@@ -312,8 +327,8 @@
             </ul>
          </section>
       </section>
-      <section id="Tehnologies">
-         <h2> Tehnologies </h2>
+      <section id="Technologies">
+         <h2> Technologies </h2>
          <section id="Azure_functions">
             <h3> Azure functions </h3>
             <p>
@@ -346,7 +361,7 @@
          <section id="scikit-learn">
             <h3> Scikit-learn </h3>
             <p>
-               Scikit-learn is a library in Python that provides many unsupervised and supervised learning algorithms. It’s built upon some of the technology we are already familiar with like with, like NumPy, Pandas, and Matplotlib.
+               Scikit-learn is a library in Python that provides many unsupervised and supervised learning algorithms. It’s built upon some of the technology we are already familiar with, like NumPy, Pandas, and Matplotlib.
             </p>
          </section>
       </section>
@@ -356,6 +371,23 @@
             We are eager to implement this project.
             Updates will come!
          </p>
+      </section>
+      <section id="biblio-references">
+         <h2>References</h2>
+            <ul>
+               <li><cite>
+                  <a href="https://scikit-learn.org/stable/">Scikit-learn</a>
+                </cite></li>
+                <li><cite>
+                  <a href="https://angular.io/">Angular</a>
+                </cite></li>
+                <li><cite>
+                  <a href="https://www.typescriptlang.org/">Typescript</a>
+                </cite></li>
+                <li><cite>
+                  <a href="https://azure.microsoft.com/en-us/services/functions/">Azure functions</a>
+                </cite></li>
+            </ul>
       </section>
    </body>
 </html>
