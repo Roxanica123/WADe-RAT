@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/Nlp": {
+    "/process": {
       "post": {
         "tags": [
           "Nlp"
@@ -97,9 +97,9 @@
       "NaturalLanguageRequestModel": {
         "type": "object",
         "properties": {
-          "openApiSchema": {
+          "openApiDocument": {
             "type": "string",
-            "description": "The OpenApi Schema downloaded from the URL",
+            "description": "The OpenApi document downloaded from the URL",
             "nullable": true
           },
           "resources": {

@@ -5,34 +5,32 @@
     "version": "1.0"
   },
   "paths": {
-    "/Translation": {
-      "get": {
+    "/translate": {
+      "post": {
         "tags": [
           "Translation"
         ],
         "summary": "Translates text",
-        "parameters": [
-          {
-            "name": "TextLanguage",
-            "in": "query",
-            "description": "The language that the text is written into.",
-            "schema": {
-              "type": "string",
-              "example": "Romanian"
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationRequestModel"
+              }
             },
-            "example": "Romanian"
-          },
-          {
-            "name": "Text",
-            "in": "query",
-            "description": "Text to be translated.",
-            "schema": {
-              "type": "string",
-              "example": "Sper ca acest text sa fie tradus."
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationRequestModel"
+              }
             },
-            "example": "Sper ca acest text sa fie tradus."
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationRequestModel"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -97,6 +95,24 @@
             "description": "",
             "nullable": true,
             "example": "The data received is invalid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TranslationRequestModel": {
+        "type": "object",
+        "properties": {
+          "textLanguage": {
+            "type": "string",
+            "description": "The language that the text is written into.",
+            "nullable": true,
+            "example": "Romanian"
+          },
+          "text": {
+            "type": "string",
+            "description": "Text to be translated.",
+            "nullable": true,
+            "example": "Sper ca acest text sa fie tradus."
           }
         },
         "additionalProperties": false

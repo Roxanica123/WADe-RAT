@@ -5,14 +5,15 @@
     "version": "1.0"
   },
   "paths": {
-    "/PreProcessing": {
-      "get": {
+    "/preprocess": {
+      "post": {
         "tags": [
           "PreProcessing"
         ],
+        "summary": "Does some preprocessing steps for on the NLP request such as downloading and parsing the OpenAPI document",
         "parameters": [
           {
-            "name": "OpenApiSchemaUrl",
+            "name": "OpenApiDocumentUrl",
             "in": "query",
             "description": "",
             "schema": {
@@ -22,7 +23,7 @@
             "example": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json"
           },
           {
-            "name": "NaturalLanguageString",
+            "name": "Sentence",
             "in": "query",
             "description": "",
             "schema": {
@@ -30,6 +31,16 @@
               "example": "show me all the photos in gallery 69234652"
             },
             "example": "show me all the photos in gallery 69234652"
+          },
+          {
+            "name": "Language",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string",
+              "example": "English"
+            },
+            "example": "English"
           }
         ],
         "responses": {
@@ -54,7 +65,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "invalid data was sent to the service",
             "content": {
               "text/plain": {
                 "schema": {
@@ -100,7 +111,7 @@
       "PreProcessingResponseModel": {
         "type": "object",
         "properties": {
-          "openApiSchema": {
+          "openApiDocument": {
             "type": "string",
             "description": "The OpenApi Schema downloaded from the URL",
             "nullable": true
