@@ -1,0 +1,118 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "api.translation",
+    "version": "1.0"
+  },
+  "paths": {
+    "/Translation": {
+      "get": {
+        "tags": [
+          "Translation"
+        ],
+        "summary": "Translates text",
+        "parameters": [
+          {
+            "name": "TextLanguage",
+            "in": "query",
+            "description": "The language that the text is written into.",
+            "schema": {
+              "type": "string",
+              "example": "Romanian"
+            },
+            "example": "Romanian"
+          },
+          {
+            "name": "Text",
+            "in": "query",
+            "description": "Text to be translated.",
+            "schema": {
+              "type": "string",
+              "example": "Sper ca acest text sa fie tradus."
+            },
+            "example": "Sper ca acest text sa fie tradus."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationResultModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationResultModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationResultModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid data was sent to the service",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "external translation services are down"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "description": "",
+            "format": "int64",
+            "example": 101
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "The data received is invalid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TranslationResultModel": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "Im hoping this text will be translated."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

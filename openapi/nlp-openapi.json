@@ -1,0 +1,158 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "api.nlp",
+    "version": "1.0"
+  },
+  "paths": {
+    "/Nlp": {
+      "post": {
+        "tags": [
+          "Nlp"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NaturalLanguageRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NaturalLanguageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NaturalLanguageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NaturalLanguageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "description": "",
+            "format": "int64",
+            "example": 101
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "The data received is invalid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NaturalLanguageRequestModel": {
+        "type": "object",
+        "properties": {
+          "openApiSchema": {
+            "type": "string",
+            "description": "The OpenApi Schema downloaded from the URL",
+            "nullable": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of resources for example: photos, users, gallery",
+            "nullable": true
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of tokens extracted, for example: give, all, albums, name",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NaturalLanguageResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "https://tesla.crypto.net/api/gallery"
+          },
+          "method": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": "GET"
+          },
+          "queryParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "",
+            "nullable": true,
+            "example": ""
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
