@@ -2,7 +2,7 @@
 sequenceDiagram
   Title: Sentence to request flow
   User->> Web Application: GET /;
-  Web Application ->> API Gateway: GET /ProcessNaturalLanguage;
+  Web Application ->> API Gateway: GET /process;
   API Gateway ->> Translation API: POST /translate
   Translation API ->> Google Cloud Translation API: POST /translate
   Google Cloud Translation API -->> Translation API : {translated sentence}

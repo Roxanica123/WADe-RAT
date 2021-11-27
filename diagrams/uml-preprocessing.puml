@@ -16,15 +16,23 @@ class PreprocessingOrchestrator {
     -openApiDownloader: OpenApiDownloader
     -resourcesExtractor: ResourcesExtractor
     -tokenizer : TokenizingService
-    +preprocess(String url, String nlpSentence) : JSON 
+    +preprocess(String url, String nlpSentence) : PreprocessingResult
 }
 
 class PreprocessingFunction {
 	-PreprocessingOrchestrator : PreprocessingOrchestrator
 	+preprocessNaturalLanguage (HttpRequest request) : HttpResponse
 }
+
+class PreprocessingResult{
+    -openAPIDocument: JSON
+    -resources: List<String>
+    -tokens: List<String>
+}
+
 PreprocessingFunction --> PreprocessingOrchestrator 
 PreprocessingOrchestrator --> OpenApiDownloader
 PreprocessingOrchestrator --> ResourcesExtractor
 PreprocessingOrchestrator --> Tokenizer
+PreprocessingOrchestrator -- PreprocessingResult
 @enduml

@@ -1,20 +1,20 @@
 @startuml API NLP
 
 class InputData{
-    -openAPISchema: JSON
+    -openAPIDocument: JSON
     -resources: List<String>
     -tokens: List<String>
 }
 
 class ProcessingResult{
-    -path: String
+    -url: String
     -method: String
     -queryParams: List<(String, String)>
     -body:  String
 }
 
 class RouteIdentifier{
-    +identifyPath(InputData data, ProcessingResultBuilder resultBuilder)
+    +identifyRoute(InputData data, ProcessingResultBuilder resultBuilder)
 }
 
 class MethodIdentifier{
@@ -33,7 +33,7 @@ class BodyMapper{
 class ProcessingResultBuilder {
     - processingResult : ProcessingResult 
     + createRequest()
-    + withPath(String path)
+    + withRoute(String path)
     + withMethod(String method)
     + withQueryParams(List<(String, String)> params)
     + withBody(String body)
@@ -42,7 +42,7 @@ class ProcessingResultBuilder {
 
 class NLPOrchestrator {
     -requestBuilder: ProcessingResultBuilder
-    -pathIdentifier: RouteIdentifier
+    -routeIdentifier: RouteIdentifier
     -methodIdentifier: MethodIdentifier 
     -queryMapper: QueryMapper
     -bodyMapper: BodyMapper

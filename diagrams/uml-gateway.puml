@@ -1,13 +1,13 @@
 @startuml API Gateway
 
 class PreprocessingResult{
-    -openAPISchema: JSON
+    -openAPIDocument: JSON
     -resources: List<String>
     -tokens: List<String>
 }
 
 class ProcessingResult{
-    -path: String
+    -url: String
     -method: String
     -queryParams: List<(String, String)>
     -body:  String
