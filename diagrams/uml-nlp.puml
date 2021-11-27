@@ -1,0 +1,64 @@
+@startuml API NLP
+
+class InputData{
+    -openAPISchema: JSON
+    -resources: List<String>
+    -tokens: List<String>
+}
+
+class ProcessingResult{
+    -path: String
+    -method: String
+    -queryParams: List<(String, String)>
+    -body:  String
+}
+
+class RouteIdentifier{
+    +identifyPath(InputData data, ProcessingResultBuilder resultBuilder)
+}
+
+class MethodIdentifier{
+    +identifyMethod(InputData data, ProcessingResultBuilder resultBuilder)
+}
+
+class QueryMapper{
+    +mapQueryParams(InputData data, ProcessingResultBuilder resultBuilder)
+}
+
+class BodyMapper{
+    +mapBody(InputData data, ProcessingResultBuilder resultBuilder)
+}
+
+
+class ProcessingResultBuilder {
+    - processingResult : ProcessingResult 
+    + createRequest()
+    + withPath(String path)
+    + withMethod(String method)
+    + withQueryParams(List<(String, String)> params)
+    + withBody(String body)
+    + build() : ProcessingResult
+}
+
+class NLPOrchestrator {
+    -requestBuilder: ProcessingResultBuilder
+    -pathIdentifier: RouteIdentifier
+    -methodIdentifier: MethodIdentifier 
+    -queryMapper: QueryMapper
+    -bodyMapper: BodyMapper
+    +processNaturalLanguage(InputData data) : ProcessingResult
+}
+
+class NLPFunction {
+	-nlpOrchestrator : GatewayOrchestrator
+	+processNaturalLanguage (HttpRequest request) : HttpResponse
+}
+NLPFunction --> NLPOrchestrator
+NLPOrchestrator *--> ProcessingResultBuilder
+NLPOrchestrator --> RouteIdentifier
+NLPOrchestrator --> MethodIdentifier
+NLPOrchestrator --> QueryMapper
+NLPOrchestrator --> BodyMapper
+ProcessingResultBuilder *--> ProcessingResult
+
+@enduml

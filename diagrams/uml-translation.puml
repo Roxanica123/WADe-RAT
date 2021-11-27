@@ -1,0 +1,26 @@
+@startuml API Gateway
+
+class SendRequestService{
+    +execute(String path, List<(String, String)> params, String body): JSON
+}
+
+class GetGoogleSecretService{
+    +execute() : String
+}
+
+class TranslationService{
+    -sendRequestService: SendRequestService
+    -getGoogleSecretService: GetGoogleSecretService
+    +translateNaturalLanguage(String nlpSentence, String language) : String
+}
+
+class TranslationFunction {
+	-translationService: TranslationService
+	+translate(HttpRequest request) : HttpResponse
+}
+
+TranslationFunction --> TranslationService
+TranslationService --> GetGoogleSecretService
+TranslationService --> SendRequestService
+
+@enduml

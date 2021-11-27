@@ -1,0 +1,30 @@
+@startuml Preprocessing API
+
+class OpenApiDownloader{
+    +downLoadOpenApi(String url): JSON
+}
+
+class ResourcesExtractor{
+    +extractResources(JSON openAPI): List<String>
+}
+
+class Tokenizer{
+    -cleanStopWords(String nlpSentence, List<String> resources)
+    +getTokens(String nlpSentence, List<String> resources) : List<String> 
+}
+class PreprocessingOrchestrator {
+    -openApiDownloader: OpenApiDownloader
+    -resourcesExtractor: ResourcesExtractor
+    -tokenizer : TokenizingService
+    +preprocess(String url, String nlpSentence) : JSON 
+}
+
+class PreprocessingFunction {
+	-PreprocessingOrchestrator : PreprocessingOrchestrator
+	+preprocessNaturalLanguage (HttpRequest request) : HttpResponse
+}
+PreprocessingFunction --> PreprocessingOrchestrator 
+PreprocessingOrchestrator --> OpenApiDownloader
+PreprocessingOrchestrator --> ResourcesExtractor
+PreprocessingOrchestrator --> Tokenizer
+@enduml
