@@ -11,6 +11,6 @@ permalink: /Docs/
 - Milea Robert Stefan
 
 # Docs links
-- [Technical report]({% link scholary.html %})
+- [Technical report]({% link ../scholary.html %})
 
 
