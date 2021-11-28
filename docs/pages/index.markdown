@@ -1,3 +1,10 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: home
+---
+
 # Rest API Interactive Tool - WADe 2021-2022
 
 # Team Members
@@ -8,13 +15,3 @@
 Our goal is to create a web aplication cappeble of proccesing natural language in order to generate API calls  based on concept exposed by the OpenAPI document describing this API
 
 # Project Status:
-## Iteration I:
-
-- Overal review of the arhitectural desing of the aplicaiton
-
-- Research the topic 
-
-- Picked two candidate API for testing:
-Spotify and Twiter
-
-
