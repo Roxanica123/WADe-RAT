@@ -16,7 +16,7 @@ Our goal is to create a web aplication cappeble of proccesing natural language i
 
 # Project Status:
 
-##Iteration 1
+## Iteration 1
 
 - Overal review of the arhitectural desing of the aplicaiton
 
