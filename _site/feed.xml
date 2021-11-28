@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-11-28T13:39:05+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">WADe-RAT team blog</title><entry><title type="html">Technical report is ready</title><link href="http://localhost:4000/docs/2021/11/28/documentation-ready.html" rel="alternate" type="text/html" title="Technical report is ready" /><published>2021-11-28T13:10:31+02:00</published><updated>2021-11-28T13:10:31+02:00</updated><id>http://localhost:4000/docs/2021/11/28/documentation-ready</id><content type="html" xml:base="http://localhost:4000/docs/2021/11/28/documentation-ready.html">&lt;p&gt;We finished the Scholarly HTML technical report and it can be seen &lt;a href=&quot;/scholary.html&quot;&gt;here&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="docs" /><summary type="html">We finished the Scholarly HTML technical report and it can be seen here</summary></entry><entry><title type="html">Our first iteration</title><link href="http://localhost:4000/wade/2021/11/27/our-first-iteration.html" rel="alternate" type="text/html" title="Our first iteration" /><published>2021-11-27T12:50:31+02:00</published><updated>2021-11-27T12:50:31+02:00</updated><id>http://localhost:4000/wade/2021/11/27/our-first-iteration</id><content type="html" xml:base="http://localhost:4000/wade/2021/11/27/our-first-iteration.html">&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Overal review of the arhitectural desing of the aplicaiton&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Research the topic&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Picked two candidate API for testing:
+&lt;a href=&quot;https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Spotify&lt;/a&gt; and 
+&lt;a href=&quot;https://api.apis.guru/v2/specs/twitter.com/current/2.21/openapi.json&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Twitter&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="wade" /><summary type="html">Overal review of the arhitectural desing of the aplicaiton</summary></entry></feed>
