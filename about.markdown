@@ -12,5 +12,6 @@ permalink: /about/
 
 # About
 This little site is the place where we will document our WADe adventure.
+#project #infoiasi #wade #web.
 
 
