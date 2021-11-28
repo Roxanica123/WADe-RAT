@@ -4,7 +4,8 @@
 
 layout: home
 ---
-## Rest API Interactive Tool - WADe 2021-2022
+<h1>{{ "Rest API Interactive Tool - WADe 2021-2022"}}</h1>
+
 ## Team Members
 - Roxana Irimia
 - Milea Robert Stefan
