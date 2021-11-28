@@ -4,12 +4,12 @@
 
 layout: home
 ---
-
-# Team Members
+## Rest API Interactive Tool - WADe 2021-2022
+## Team Members
 - Roxana Irimia
 - Milea Robert Stefan
 
-# Goal
+## Goal
 Our goal is to create a web aplication cappeble of proccesing natural language in order to generate API calls  based on concept exposed by the OpenAPI document describing this API
 
-# Project Status:
+## Project Status:
