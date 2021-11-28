@@ -23,5 +23,5 @@ Our goal is to create a web aplication cappeble of proccesing natural language i
 - Research the topic 
 
 - Picked two candidate API for testing:
-[Spotify](https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json){:target="_blank"}{:rel="noopener noreferrer"} and 
-[Twitter](https://api.apis.guru/v2/specs/twitter.com/current/2.21/openapi.json){:target="_blank"}{:rel="noopener noreferrer"}
+[Spotify](https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json) and 
+[Twitter](https://api.apis.guru/v2/specs/twitter.com/current/2.21/openapi.json)
