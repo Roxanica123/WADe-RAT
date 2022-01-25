@@ -1,0 +1,39 @@
+<!-- <div class="form-container">
+<mat-form-field appearance="fill">
+  <mat-label>Open API link</mat-label>
+  <input matInput required [(ngModel)]="userInput.link" placeholder="https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json">
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Choose language</mat-label>
+  <mat-select [(value)]="selected" [(ngModel)]="userInput.language">
+    <mat-option *ngFor="let lang of languages" [value]=lang.value>
+      {{lang.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Textarea</mat-label>
+  <textarea matInput required [(ngModel)]="userInput.text"></textarea>
+</mat-form-field>
+<button mat-raised-button color="primary">Primary</button>
+</div> -->
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Open API link</mat-label>
+    <input matInput required formControlName="link" placeholder="https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Choose language</mat-label>
+    <mat-select [(value)]="selected" formControlName="language">
+      <mat-option *ngFor="let lang of languages" [value]=lang.value>
+        {{lang.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Textarea</mat-label>
+    <textarea matInput required formControlName="text"></textarea>
+  </mat-form-field>
+  <button mat-raised-button type="submit" [disabled]="!userForm.valid" color="primary">Primary</button>
+</form>
