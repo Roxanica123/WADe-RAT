@@ -2,31 +2,11 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "shell",
-			"label": "npm install (functions)",
-			"command": "npm install",
-			"options": {
-				"cwd": "${workspaceFolder}/gateway"
-			}
-		},
-		{
-			"type": "shell",
-			"label": "npm prune (functions)",
-			"command": "npm prune --production",
-			"problemMatcher": [],
-			"options": {
-				"cwd": "${workspaceFolder}/gateway"
-			}
-		},
-		{
 			"type": "func",
 			"command": "host start",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
-			"dependsOn": "pip install (functions)",
-			"options": {
-				"cwd": "${workspaceFolder}/preprocessing"
-			}
+			"dependsOn": "pip install (functions)"
 		},
 		{
 			"label": "pip install (functions)",
@@ -40,10 +20,7 @@
 			"linux": {
 				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
 			},
-			"problemMatcher": [],
-			"options": {
-				"cwd": "${workspaceFolder}/preprocessing"
-			}
+			"problemMatcher": []
 		}
 	]
 }

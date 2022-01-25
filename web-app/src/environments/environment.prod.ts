@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  gatewayURL:
+  'https://rat-gateway.azurewebsites.net/api/process',
 };
