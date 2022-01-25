@@ -21,7 +21,7 @@
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
   <mat-form-field appearance="fill">
     <mat-label>Open API link</mat-label>
-    <input matInput required formControlName="link" placeholder="https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json">
+    <input matInput required formControlName="openApiDocumentUrl" placeholder="https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json">
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Choose language</mat-label>
@@ -33,7 +33,7 @@
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Textarea</mat-label>
-    <textarea matInput required formControlName="text"></textarea>
+    <textarea matInput required formControlName="sentence"></textarea>
   </mat-form-field>
   <button mat-raised-button type="submit" [disabled]="!userForm.valid" color="primary">Primary</button>
 </form>

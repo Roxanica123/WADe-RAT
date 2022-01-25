@@ -18,9 +18,9 @@ export class HomeComponent implements OnInit {
   public selected = Languages.languages[0].value;
 
   userForm = this.formBuilder.group({
-    link: ['', Validators.required],
+    openApiDocumentUrl: ['', Validators.required],
     language: ['', Validators.required],
-    text: ['', Validators.required],
+    sentence: ['', Validators.required],
   });
 
   constructor(private readonly formBuilder:FormBuilder) { }
