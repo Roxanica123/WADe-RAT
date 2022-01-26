@@ -23,8 +23,9 @@ class GatewayOrchestrator {
         }
         try {
             const preprocessedBody = await new PreprocessingService().getPreprocessedBody(body);
-            context.log(preprocessedBody);
-            return new OkResponse("cv", "GET", {}, preprocessedBody);
+            const nlpResult = await new NLPService().getNlpResult(preprocessedBody);
+
+            return new OkResponse(nlpResult);
         } catch (error) {
             context.log('JavaScript HTTP trigger function processed a request.');
             return new ErrorResponse("Something went wrong", 500);
@@ -32,17 +33,14 @@ class GatewayOrchestrator {
     }
 }
 
-
 class OkResponse {
     body = {};
     status = 200;
-    constructor(url, method, queryParameters = {}, body = {}) {
-        this.body.url = url;
-        this.body.method = method;
-        this.body.queryParameters = queryParameters;
-        this.body.body = body;
+    constructor(body) {
+        this.body = body;
     }
 }
+
 class ErrorResponse {
     body = {};
     status;
@@ -70,6 +68,13 @@ class InputValidator {
 class PreprocessingService {
     url = "https://rat-preprocessing.azurewebsites.net/api/preprocess";
     async getPreprocessedBody(body) {
+        return (await post(this.url, body)).data;
+    }
+}
+
+class NLPService{
+    url = "https://rat-nlp.azurewebsites.net/api/process";
+    async getNlpResult(body){
         return (await post(this.url, body)).data;
     }
 }
