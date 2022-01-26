@@ -1,8 +1,9 @@
+const axios = require('axios')
 
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
-    const result = new GatewayOrchestrator().orchestrate(req.body);
+    const result = await new GatewayOrchestrator().orchestrate(req.body, context);
 
     context.res = {
         status: result.status,
@@ -16,11 +17,18 @@ class GatewayOrchestrator {
     constructor() {
         this.inputValidator = new InputValidator();
     }
-    orchestrate(body) {
+    async orchestrate(body, context) {
         if (!this.inputValidator.isValid(body)) {
             return new ErrorResponse("Invalid input");
         }
-        return new OkResponse("cv", "GET", {}, body);
+        try {
+            const preprocessedBody = await new PreprocessingService().getPreprocessedBody(body);
+            context.log(preprocessedBody);
+            return new OkResponse("cv", "GET", {}, preprocessedBody);
+        } catch (error) {
+            context.log('JavaScript HTTP trigger function processed a request.');
+            return new ErrorResponse("Something went wrong", 500);
+        }
     }
 }
 
@@ -49,7 +57,7 @@ const requiredProperties = ["openApiDocumentUrl", "sentence", "language"];
 class InputValidator {
     isValid(body) {
         try {
-            let first =  body !== undefined;
+            let first = body !== undefined;
             let second = requiredProperties.find(property => body[property] === undefined) === undefined;
             return first && second;
         }
@@ -57,4 +65,19 @@ class InputValidator {
             return false;
         }
     }
+}
+
+class PreprocessingService {
+    url = "https://rat-preprocessing.azurewebsites.net/api/preprocess";
+    async getPreprocessedBody(body) {
+        return (await post(this.url, body)).data;
+    }
+}
+
+async function post(url, data) {
+    return await axios.post(url, JSON.stringify(data), {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
 }
