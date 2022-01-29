@@ -1,6 +1,9 @@
 import re
 
 
+class CustomException(Exception):
+    pass
+
 def get_compound_regex(compound):
     rj = ""
     for i in range(len(compound) - 1):
@@ -58,8 +61,8 @@ def get_path(info, doc):
                       re.fullmatch(pattern, p)]
     path = filter_by_path_with_identifier(doc["paths"], matching_paths, info["possible_params"], info["method"])
     if path == "":
-        raise Exception(
-            f"Could not find a path similar with: {dummy_pattern}, try to be more explicit")
+        return {"suggestions": [p for p in paths if
+                                re.match(f".*{info['target_resource']['target']['lemma']}.*", p.lower())]}
     return path
 
 
@@ -79,6 +82,8 @@ def get_parameters(info, doc, path):
     header = []
     query = []
     tokens = info["tokens"]
+    if info["method"].lower() not in list(doc["paths"][path].keys()):
+        raise CustomException(f"There is no {info['method']} on path {path}")
     params = doc["paths"][path][info["method"].lower()]["parameters"]
     possible_params = info["possible_params"]
 
@@ -87,24 +92,29 @@ def get_parameters(info, doc, path):
            and info["resource_parent"]["parent"]["target"]["id"] > info["target_resource"]["target"]["id"] \
         else len(tokens)
 
-    for possible_param in possible_params:
-        for param in params:
+    used_possible_params = []
+
+    for param in params:
+        was_set = False
+        for possible_param in possible_params:
             searched = "identifier" if param["name"] == "id" else param["name"]
-            if re.match(f"{possible_param['lemma']}.*", searched):
+            if re.match(f"{possible_param['lemma']}.*", searched) and possible_param not in used_possible_params:
                 value = get_value_for_token(tokens, possible_param, search_end)
                 if param["in"] == "path":
                     path = re.sub("{.*}$", get_raw_input(value, info["sentence"]), path)
-                possible_param["used"] = True
                 if param["in"] == "header":
                     header.append({"param": param, "value": value})
                 if param["in"] == "query":
                     query.append({"param": param, "value": value})
+                used_possible_params.append(possible_param)
+                was_set = True
+                break
+
+        if "required" in list(param.keys()) and param["required"] is True and param["in"] != "path" and was_set is False:
+            if param["in"] == "header":
+                header.append({"param": param, "value": "{you_need_to_add_it}"})
             else:
-                if param["required"] is True and param["in"] != "path":
-                    if param["in"] == "header":
-                        header.append({"param": param, "value": "{you_need_to_add_it}"})
-                    else:
-                        query.append({"param": param, "value": "{you_need_to_add_it}"})
+                query.append({"param": param, "value": "{you_need_to_add_it}"})
     return query, header, path
 
 
@@ -130,11 +140,18 @@ def replace_path_identifiers(info, path):
     return path
 
 
-def get_result(info, doc):
-    path = get_path(info, doc)
+def get_result(info, doc, path=None):
+    if path is None:
+        path = get_path(info, doc)
+        if isinstance(path, str) is not True:
+            return path
+    else:
+        info["resource_parent"] = None
     query, header, path = get_parameters(info, doc, path)
     path = replace_path_identifiers(info, path)
     query = build_query(query, info["sentence"])
     header = build_header(header, info["sentence"])
-    url = doc["servers"][0]["url"] + path + query
+    url =  path + query
+    if "servers" in list(doc.keys()):
+        url += doc["servers"][0]["url"] + url
     return {"url": url, "method" : info["method"], "headers": header, "body": {}}
