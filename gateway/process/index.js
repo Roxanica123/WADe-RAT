@@ -23,8 +23,6 @@ class GatewayOrchestrator {
         }
         try {
             const preprocessedBody = await new PreprocessingService().getPreprocessedBody(body);
-            preprocessedBody["sentence"] = body["sentence"];
-            context.log(preprocessedBody)
             const nlpResult = await new NLPService().getNlpResult(preprocessedBody);
 
             return new OkResponse(nlpResult);
