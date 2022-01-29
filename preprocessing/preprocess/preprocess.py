@@ -14,6 +14,8 @@ POST_VERBS = ["post", "create"]
 PUT_VERBS = ["put", "update"]
 DELETE_VERBS = ["delete"]
 
+class CustomException(Exception):
+    pass
 
 def get_children_of_token(tokens, parent):
     return [t for t in tokens if t["head"] == parent["id"] and t["id"] != parent["id"]]
@@ -34,7 +36,7 @@ def find_verb_with_noun_child(tokens, child):
 
 def identify_method(verb_token):
     if verb_token is None:
-        raise Exception("Could not identify the Rest API method")
+        raise CustomException("Could not identify the Rest API method")
     verb = verb_token["lemma"].lower()
     if verb in GET_VERBS:
         return "GET"
@@ -44,7 +46,7 @@ def identify_method(verb_token):
         return "PUT"
     if verb in DELETE_VERBS:
         return "DELETE"
-    raise Exception("Could not identify the Rest API method")
+    raise CustomException("Could not identify the Rest API method")
 
 
 def get_verb(tokens):
@@ -68,7 +70,7 @@ def get_parts_of_resource(tokens, resource):
 def get_target_resource(tokens, verb):
     nouns = [t for t in get_children_of_token(tokens, verb) if t["pos"] == NOUN]
     if len(nouns) == 0:
-        raise Exception("Could not identify the target resource")
+        raise CustomException("Could not identify the target resource")
     resource = nouns[0]
     return {"target": resource, "compound": get_parts_of_resource(tokens, resource)}
 

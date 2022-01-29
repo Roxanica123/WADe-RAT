@@ -4,7 +4,7 @@ import json
 
 import azure.functions as func
 
-from preprocess.preprocess import get_all_info
+from preprocess.preprocess import CustomException, get_all_info
 
 from .resorces import get_resources_from_paths
 from .tokens import get_tokens
@@ -30,6 +30,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             "sentenceInfo": sentence_info, 
             }
         return func.HttpResponse(json.dumps(response), status_code=200)
+    except CustomException as err:
+        return func.HttpResponse(f"{err}", status_code=400)
     except Exception:
-        return func.HttpResponse("Something went wrong", status_code=500)
+        return func.HttpResponse("Something went wrong, check your input and try again", status_code=500)
 
