@@ -147,6 +147,8 @@ def get_result(info, doc, path=None):
             return path
     else:
         info["resource_parent"] = None
+        if path not in list(doc["paths"].keys()):
+            raise CustomException("The path you specified does not exist")
     query, header, path = get_parameters(info, doc, path)
     path = replace_path_identifiers(info, path)
     query = build_query(query, info["sentence"])

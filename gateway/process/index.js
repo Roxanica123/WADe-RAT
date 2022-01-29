@@ -23,11 +23,19 @@ class GatewayOrchestrator {
         }
         try {
             const preprocessedBody = await new PreprocessingService().getPreprocessedBody(body);
+            if (preprocessedBody["error"] !== undefined) {
+                return new ErrorResponse(preprocessedBody["error"], preprocessedBody["status"]);
+            }
+            if(body["path"]!==undefined){
+                preprocessedBody["path"] = body["path"]
+            }
             const nlpResult = await new NLPService().getNlpResult(preprocessedBody);
-
+            if (nlpResult["error"] !== undefined) {
+                return new ErrorResponse(nlpResult["error"], nlpResult["status"]);
+            }
             return new OkResponse(nlpResult);
         } catch (error) {
-            context.log('JavaScript HTTP trigger function processed a request.');
+            context.log(error);
             return new ErrorResponse("Something went wrong", 500);
         }
     }
@@ -72,17 +80,17 @@ class PreprocessingService {
     }
 }
 
-class NLPService{
+class NLPService {
     url = "https://rat-nlp.azurewebsites.net/api/process";
-    async getNlpResult(body){
+    async getNlpResult(body) {
         return (await post(this.url, body)).data;
     }
 }
 
 async function post(url, data) {
-    return await axios.post(url, JSON.stringify(data), {
+    return await (axios.post(url, JSON.stringify(data), {
         headers: {
             'Content-Type': 'application/json'
         }
-    });
+    }).catch(error => { return { data: { "error": error.response.data, "status": error.response.status } } }));
 }
