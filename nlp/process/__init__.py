@@ -5,6 +5,8 @@ import json
 
 import azure.functions as func
 
+from process.build_request import get_result
+
 # {
 #   "openApiDocument": "string",
 #   "resources": [
@@ -29,17 +31,10 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
-        open_api_doc = req_body["openApiDocument"]
-        logging.info(open_api_doc)
-        resources = req_body["resources"]
-        logging.info(resources)
-        tokens = req_body["tokens"]
-        logging.info(tokens)
-        response = {
-            "url": "https://tesla.crypto.net/api/gallery", 
-            "method": "GET", 
-            "queryParameters": {}, 
-            "body":{}}
+        doc = req_body["openApiDocument"]
+        info = req_body["sentenceInfo"]
+        result = get_result(info, doc)
+        response = result
         return func.HttpResponse(json.dumps(response), status_code=200)
     except:
         return func.HttpResponse("Something went wrong", status_code=500)
