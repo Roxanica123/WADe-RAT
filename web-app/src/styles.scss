@@ -1,4 +1,50 @@
 
 
-html, body { height: 100%; background-color:darkgreen}
+html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-even {
+    justify-content: space-evenly;
+}
+
+
+
+.snack-info {
+    background-color: rgb(23, 129, 23);
+    color: white;
+    text-align: center;
+    align-items: center;
+}
+
+.snack-error {
+    background-color: rgb(199, 21, 21);
+    color: white;
+    text-align: center;
+    align-items: center;
+}
+
+.m16 {
+    margin: 16px 16px 16px 16px;
+}
+
+
