@@ -17,9 +17,14 @@ form{
     width: 60%;
 }
 
+.mat-form-field-2{
+  width: 100%;
+}
+
 .demo-table {
     align-items: center;
-    width: 60%;
+    align-self: center;
+    width: 100%;
   }
   
   .mat-row .mat-cell {
@@ -35,3 +40,8 @@ form{
   .demo-row-is-clicked {
     font-weight: bold;
   }
+
+
+.mat-card{
+    width: 60%;
+}

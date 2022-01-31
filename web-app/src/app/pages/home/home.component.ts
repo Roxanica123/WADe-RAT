@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { RequestsService } from 'src/app/services/requests.service';
 import { SnackService } from 'src/app/services/snack.service';
@@ -12,6 +12,18 @@ interface Language {
   viewValue: string;
 }
 
+class Visualize {
+  url!: string;
+  http_verb!: string;
+  headers!: object;
+
+  constructor(_url: string, _verb: string, _headers: object) {
+    this.url = _url;
+    this.http_verb = _verb;
+    this.headers = _headers;
+  }
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -20,55 +32,104 @@ interface Language {
 export class HomeComponent implements OnInit {
   public languages: Language[] = Languages.languages;
   public selected = Languages.languages[0].value;
-  public displayedColumns = ["Query"]
-  
-  public show_query:string[] = [];
+  public displayedColumns = ["HTTPVerb", "Query"]
+  public table_title: string = ""
+  public show_query: Visualize[] = [];
+
+
+  public showTable: boolean = false;
+  public showForm: boolean = false;
+  public headers: string[] = [];
 
   userForm = this.formBuilder.group({
     openApiDocumentUrl: ['', Validators.required],
-    language: ['', Validators.required],
+    //language: ['', Validators.required],
     sentence: ['', Validators.required],
+  });
+
+  accesUrlFrom = this.formBuilder.group({
+    RoutVerb: ['', Validators.required],
+    RoutUrl: ['', Validators.required],
+    Body: ['']
   });
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly requestsService: RequestsService,
     private readonly snack: SnackService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
   }
 
   public async onSubmit() {
-    const rez:any =  await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, this.userForm.value).catch ( (error) => {
+    const myobj = this.userForm.value;
+    myobj.language = Languages.languages[0].value;
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
       this.snack.error("Ther has been a problem! " + error.message);
     });
 
     console.log(rez);
-    
-    if ( rez.url  ){
 
-      this.show_query = [rez.url];
-      console.log(this.show_query);
-    } 
-   
-    if ( rez.suggestions ){
-      if ( rez.suggestions.length == 0){
+    this.showForm = false;
+    this.showTable = false;
+
+    if (rez.url) {
+      this.displayedColumns = ["HTTPVerb", "Query", "Send"];
+      this.show_query = [new Visualize(rez.url, rez.method, rez.headers)];
+      this.table_title = "This is the route we think you want."
+      this.showForm = true;
+
+      this.headers = Object.keys(this.show_query[0].headers);
+      
+      for (const el of this.headers) {
+        this.accesUrlFrom.addControl(el, new FormControl("", Validators.required));
+      }
+      this.accesUrlFrom.patchValue(
+        {
+          "RoutVerb": rez.method,
+          "RoutUrl": rez.url
+        }
+      )
+    }
+
+    if (rez.suggestions) {
+      if (rez.suggestions.length == 0) {
         this.show_query = [];
         this.snack.error("\t\tNo route found!\t\t");
         return;
       }
 
-      this.show_query = rez.suggestions;
+      let temp: Visualize[] = []
+
+      for (let el of rez.suggestions) {
+        temp.push(new Visualize(el, "", {}))
+      }
+
+      this.displayedColumns = ["Query", "Send"];
+      this.show_query = temp;
+      this.table_title = "Are you looking for one of these routes?"
+      this.showTable = true;
+
       console.log(this.show_query);
+
+
     }
 
 
-     this.snack.info("\t\tSucces!\t\t");
+    this.snack.info("\t\tSucces!\t\t");
 
   }
-  
 
-  public clickMe(row:string):void{
+
+  public async onSend() {
+    const {Body,RoutUrl,RoutVerb} = this.accesUrlFrom.value;
+
+    
+  }
+
+  public clickMe(row: string): void {
     console.log("row=>", row)
   }
+
+
 }
