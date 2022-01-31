@@ -55,7 +55,7 @@
         <ng-container matColumnDef="Query">
           <th mat-header-cell *matHeaderCellDef> Query </th>
           <td mat-cell *matCellDef="let element; let i = index;">
-            <input type="text" matInput value={{element.url}} id={{i}}>
+                  {{element.url}}
 
           </td>
         </ng-container>
@@ -64,12 +64,6 @@
           <th mat-header-cell *matHeaderCellDef> HTTP Verb </th>
           <td mat-cell *matCellDef="let element"> {{element.http_verb}} </td>
         </ng-container>
-
-        <ng-container matColumnDef="Send">
-          <th mat-header-cell *matHeaderCellDef> Send </th>
-          <td mat-cell *matCellDef="let element"> {{element.http_verb}} </td>
-        </ng-container>
-
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickMe(row)"></tr>

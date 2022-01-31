@@ -61,20 +61,15 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public async onSubmit() {
-    const myobj = this.userForm.value;
-    myobj.language = Languages.languages[0].value;
-    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
-    });
+  private manageForm(rez : MatchReasponse | NoMatchReasponse | any) : void {
 
-    console.log(rez);
+    console.log(rez)
 
     this.showForm = false;
     this.showTable = false;
 
     if (rez.url) {
-      this.displayedColumns = ["HTTPVerb", "Query", "Send"];
+      this.displayedColumns = ["HTTPVerb", "Query"];
       this.show_query = [new Visualize(rez.url, rez.method, rez.headers)];
       this.table_title = "This is the route we think you want."
       this.showForm = true;
@@ -105,30 +100,44 @@ export class HomeComponent implements OnInit {
         temp.push(new Visualize(el, "", {}))
       }
 
-      this.displayedColumns = ["Query", "Send"];
+      this.displayedColumns = ["Query"];
       this.show_query = temp;
       this.table_title = "Are you looking for one of these routes?"
       this.showTable = true;
-
-      console.log(this.show_query);
-
-
     }
-
-
     this.snack.info("\t\tSucces!\t\t");
+  }
 
+  public async onSubmit() {
+    const myobj = this.userForm.value;
+    myobj.language = Languages.languages[0].value;
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
+      this.snack.error("Ther has been a problem! " + error.message);
+    });
+
+    this.manageForm(rez);
   }
 
 
   public async onSend() {
     const {Body,RoutUrl,RoutVerb} = this.accesUrlFrom.value;
 
-    
+  
   }
 
-  public clickMe(row: string): void {
-    console.log("row=>", row)
+  public async clickMe(row:Visualize): Promise<void> {
+
+    const myobj = this.userForm.value;
+    myobj.language = Languages.languages[0].value;
+    console.log('row-->',row);
+    myobj.path = row.url
+
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
+      this.snack.error("Ther has been a problem! " + error.message);
+    });
+
+    this.manageForm(rez);
+
   }
 
 
