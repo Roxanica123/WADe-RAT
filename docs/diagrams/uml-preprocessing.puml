@@ -4,18 +4,13 @@ class OpenApiDownloader{
     +downLoadOpenApi(String url): JSON
 }
 
-class ResourcesExtractor{
-    +extractResources(JSON openAPI): List<String>
+class Tokenizer{
+    +getTokens(String nlpSentence) : List<Token> 
 }
 
-class Tokenizer{
-    -cleanStopWords(String nlpSentence, List<String> resources)
-    +getTokens(String nlpSentence, List<String> resources) : List<String> 
-}
 class PreprocessingOrchestrator {
     -openApiDownloader: OpenApiDownloader
-    -resourcesExtractor: ResourcesExtractor
-    -tokenizer : TokenizingService
+    -InformationExctractor: InformationExctractor
     +preprocess(String url, String nlpSentence) : PreprocessingResult
 }
 
@@ -24,15 +19,43 @@ class PreprocessingFunction {
 	+preprocessNaturalLanguage (HttpRequest request) : HttpResponse
 }
 
+class InformationExctractor{
+    -tokenizer : TokenizingService
+    +getAllInfo(String sentence): SentenceInfo
+}
+
 class PreprocessingResult{
     -openAPIDocument: JSON
-    -resources: List<String>
-    -tokens: List<String>
+    -sentenceInfo: SentenceInfo
+    -sentence: String
+}
+
+class SentenceInfo{
+    -tokens: List<Token>
+    -verb: Token
+    -method: String
+    -target_resource: Token
+    -resource_parent: Token
+    -possible_params: List<Token>
+    -sentence: String
+}
+
+class Token{
+    -id: Number
+    -start: Number
+    -end: Number
+    -partOfSpeech: String
+    -head: Number
+    -lemma: String
 }
 
 PreprocessingFunction --> PreprocessingOrchestrator 
+
 PreprocessingOrchestrator --> OpenApiDownloader
-PreprocessingOrchestrator --> ResourcesExtractor
-PreprocessingOrchestrator --> Tokenizer
+PreprocessingOrchestrator --> InformationExctractor
 PreprocessingOrchestrator -- PreprocessingResult
+InformationExctractor --> Tokenizer
+InformationExctractor -- SentenceInfo
+Tokenizer -- Token
+SentenceInfo -- Token
 @enduml
