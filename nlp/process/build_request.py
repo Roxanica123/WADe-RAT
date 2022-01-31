@@ -155,5 +155,5 @@ def get_result(info, doc, path=None):
     header = build_header(header, info["sentence"])
     url =  path + query
     if "servers" in list(doc.keys()):
-        url += doc["servers"][0]["url"] + url
+        url = doc["servers"][0]["url"] + url
     return {"url": url, "method" : info["method"], "headers": header, "body": {}}
