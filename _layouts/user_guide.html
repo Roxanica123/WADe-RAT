@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>RAT-UserGuide-Scholarly HTML</title>
+    <link rel="stylesheet" href="https://w3c.github.io/scholarly-html/css/scholarly.css">
+    <script src="https://w3c.github.io/scholarly-html/js/scholarly.min.js"></script>
+
+</head>
+
+<body prefix="schema: http://schema.org">
+    <header>
+        <h1>Rest API Interactive Tool - User guide</h1>
+    </header>
+    <div role="contentinfo">
+        <dl>
+            <dt>Authors</dt>
+            <dd>
+                Roxana Irimia
+            </dd>
+            <dd>
+                Milea Robert
+            </dd>
+            <dt>License</dt>
+            <dd>
+                <a href="https://opensource.org/licenses/MIT">MIT</a>
+            </dd>
+            <dt>Github</dt>
+            <dd>
+                <a href="https://github.com/DuArms/TAIP-2021-2022-PROIECT">GitHub repo</a>
+            </dd>
+            <dt>Project video</dt>
+            <dd>
+                <a href="https://www.youtube.com/watch?v=F5lwk6FsPrw&list=RDF5lwk6FsPrw&start_radio=1">Video link</a>
+            </dd>
+        </dl>
+    </div>
+
+    <section id="API-user-guide">
+        <h3>API user guide</h3>
+        <p>
+            An user can directly process sentences by sending a POST request directly to the gateway at the following
+            address: <a
+                href=https://rat-gateway.azurewebsites.net/api/process>https://rat-gateway.azurewebsites.net/api/process</a>.
+        </p>
+        <p>
+            The request body should contain the "openApiDocumentUrl", "sentence" and "language", all in string format.
+            The user can also specify the wanted "path" and the processing will start from identifying the query, path
+            and header parameters. The response will contain the "url", the "method", the "headers" and the "body" that
+            will always be an empty object for now.
+        </p>
+        <img id="c1" src="images/happy_flow_1.png" alt="postman response" style="width:100%;">
+        <p>
+            If we did not identify the exact path that matches the user sentence, the response will be a list of
+            suggestions. As in the image below.
+        </p>
+        <img id="c2" src="images/suggestions.png" alt="postman response" style="width:100%;">
+        <p>
+            The user can take one of this suggestion and send another request that includes the chosen path and the
+            response will be the same as in the first case presented.
+        </p>
+        <img id="c3" src="images/happy_flow_2.png" alt="postman response" style="width:100%;">
+    </section>
+
+    <section id="User-Interface-Guide">
+        <h3>User Interface guide</h3>
+        <p>
+            We propose a multi-service application which will aggregate three micro-service and a user-friendly
+            interface. These components and the overall structure can be seen in the diagram below.
+        </p>
+        <img id="c4" src="diagrams/c4-system-diagram.png" alt="C4 diagram" style="width:100%;">
+        <p>
+            The user interface will allow introducing the URL to a Open API document and a sentence that describes the
+            request that the user wants to make such as "From the album that has the identifier 3, get all the tracks.".
+        </p>
+    </section>
+
+    <section id="case-studies">
+        <h3>Case studies</h3>
+        <section id="spotify">
+            <h4>Spotify API</h4>
+            The first document we tested was the <a
+                href="https://api.apis.guru/v2/specs/spotify.com/2021.8.15/openapi.json">Open API document for the
+                Spotify API</a>.
+            <p>Our algorithm is successful when tested more simple paths such as "/albums", "/tracks" and can identify
+                the
+                difference between "/albums" and "/albums/{id}" if the identifier is specified : "I want to get the
+                album
+                that has the id 3." </p>
+            <p>It can also identify the path and parameters for more complex sentences such as "From the album that has
+                the identifier 3, get me all the tracks in the market 1, with the limit of 5." as we can see in<a
+                    href="#c1"> the fist image </a></p>
+            <p>
+                However, there are still some paths that cannot be identified such as "/me/player/devices", but this
+                case can se soved by the suggestions funtionality.
+            </p>
+            <img id="c5" src="images/spotify.png" alt="postman response" style="width:100%;">
+            <p>An aspect that was overlooked is the parameters that with names such as "user_id" which will not be
+                identified.</p>
+            <img id="c6" src="images/spotify2.png" alt="postman response" style="width:100%;">
+        </section>
+        <section id="covid">
+            <h4>Covid 19 Data API</h4>
+            Another document we tested was <a
+                href="https://api.apis.guru/v2/specs/covid19-api.com/1.2.6/openapi.json">Open API document for the
+                Covid 19 Data API</a>.
+            <p>Here the paths are more simple, and the algorithm, with a little help from the suggestions feature works.
+            </p>
+            <img id="c7" src="images/covid.png" alt="postman response" style="width:100%;">
+            <p>However, the algoritm cannot identify paths such as "/country/all" or "/help/countries". In the first
+                case, we assumed that a resource can be only a noun and all will not be identified. We solved the second
+                case by taking into account not only the lemma of the world, but also it's whole form used in the
+                sentence. Now the path it's include in the suggestions list for a sentence such as "From help, get the
+                countries.".</p>
+        </section>
+        <section id="youtube">
+            <h4>Youtube Data API</h4>
+            The last document we tested was <a
+                href="https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json">Open API document for the
+                Youtube Data API</a>.
+            <p>The issue with this API is that each path starts with "/v3" this means that we will never be able to
+                identify the exact path and we will always receive suggestions.
+            </p>
+            <img id="c8" src="images/youtube1.png" alt="postman response" style="width:100%;">
+            <img id="c9" src="images/youtube2.png" alt="postman response" style="width:100%;">
+            <p>Another issue that we have is the fact that here, there are some query parameters that are refferences to
+                a schema that do not support.</p>
+            <img id="c10" src="images/youtube.png" alt="postman response" style="width:100%;">
+
+        </section>
+
+    </section>
+
+
+    <section id="biblio-references">
+        <h2>References</h2>
+        <ul>
+            <li><cite>
+                    <a href="https://angular.io/">Angular</a>
+                </cite></li>
+            <li><cite>
+                    <a href="https://www.postman.com/">Angular</a>
+                </cite></li>
+        </ul>
+    </section>
+</body>
+
+</html>
