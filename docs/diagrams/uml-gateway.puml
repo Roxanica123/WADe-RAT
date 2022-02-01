@@ -1,0 +1,54 @@
+@startuml API Gateway
+
+class PreprocessingResult{
+    -openAPIDocument: JSON
+    -sentenceInfo: JSON
+    -sentence: String
+}
+
+class ProcessingResult{
+    -url: String
+    -method: String
+    -headers: JSON
+    -body:  String
+}
+
+class SendRequestService{
+    +sendRequest(String url, JSON data): JSON
+}
+
+class PreprocessingService{
+    -sendRequestService: SendRequestService
+    +getPreprocessedBody(JSON body) : PreprocessingResult
+}
+
+class NLPService{
+    -sendRequestService: SendRequestService
+    +getNlpResult(PreprocessingResult data): ProcessingResult
+}
+
+class GatewayOrchestrator {
+    -inputValidator: InputValidator
+    -preprocessingService: PreprocessingService
+    -nlpService : NLPService 
+    +orchestrate(JSON requestBody) : JSON 
+}
+
+class InputValidator {
+    -requiredProperties: List<String>
+    -isValid(JSONbody): bool
+}
+class GatewayFunction {
+	-gatewayOrchestrator : GatewayOrchestrator
+	+process (HttpRequest request) : HttpResponse
+}
+GatewayFunction --> GatewayOrchestrator
+GatewayFunction --> InputValidator
+GatewayOrchestrator --> PreprocessingService
+GatewayOrchestrator --> NLPService
+NLPService --> SendRequestService
+PreprocessingService --> SendRequestService
+PreprocessingService -- PreprocessingResult
+NLPService -- ProcessingResult
+
+@enduml

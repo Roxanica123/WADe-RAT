@@ -1,6 +1,6 @@
 ---
 layout: scholary
 title: Docs
-permalink: /Docs/
+permalink: /docs/
 ---
 
