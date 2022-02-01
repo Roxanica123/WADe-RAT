@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
@@ -24,6 +25,10 @@ class Visualize {
   }
 }
 
+class SegmentedUrl {
+  constructor(public readonly routeData: string[], public readonly url: string) { }
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -35,6 +40,7 @@ export class HomeComponent implements OnInit {
   public displayedColumns = ["HTTPVerb", "Query"]
   public table_title: string = ""
   public show_query: Visualize[] = [];
+  public query_missing_params: string[] = [];
 
 
   public showTable: boolean = false;
@@ -43,7 +49,7 @@ export class HomeComponent implements OnInit {
 
   public headers: string[] = [];
 
-  public q_res:string="";
+  public q_res: string = "";
 
   userForm = this.formBuilder.group({
     openApiDocumentUrl: ['', Validators.required],
@@ -62,31 +68,39 @@ export class HomeComponent implements OnInit {
     private readonly snack: SnackService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
-  private manageForm(rez : MatchReasponse | NoMatchReasponse | any) : void {
+  private manageForm(rez: MatchReasponse | NoMatchReasponse | any): void {
 
+    console.log("Received from Azure Functions:");
     console.log(rez)
 
     this.showForm = false;
     this.showTable = false;
 
     if (rez.url) {
+
+      const segments = this.parseUrl(rez.url);
+
+      if (segments.routeData.length > 0) {
+        this.query_missing_params = segments.routeData.map(x => x);
+        this.query_missing_params.forEach(x => this.accesUrlFrom.addControl(x, new FormControl("", Validators.required)));
+      }
+
       this.displayedColumns = ["HTTPVerb", "Query"];
-      this.show_query = [new Visualize(rez.url, rez.method, rez.headers)];
+      this.show_query = [new Visualize(segments.url, rez.method, rez.headers)];
       this.table_title = "This is the route we think you want."
       this.showForm = true;
 
       this.headers = Object.keys(this.show_query[0].headers);
-      
+
       for (const el of this.headers) {
         this.accesUrlFrom.addControl(el, new FormControl("", Validators.required));
       }
       this.accesUrlFrom.patchValue(
         {
           "RoutVerb": rez.method,
-          "RoutUrl": rez.url
+          "RoutUrl": segments.url
         }
       )
     }
@@ -124,31 +138,36 @@ export class HomeComponent implements OnInit {
 
 
   public async onSend() {
-    const {Body,RoutUrl,RoutVerb} = this.accesUrlFrom.value;
+    const { Body, RoutUrl, RoutVerb } = this.accesUrlFrom.value;
+    let newUrl = `${RoutUrl}`;
 
-    
-    let requestHeaders: Object = { 'Content-Type': 'application/json'};
+    let requestHeaders: any = { 'Content-Type': 'application/json' };
 
-    for( const key of this.headers){
-      let skey = key as keyof typeof requestHeaders;
-      requestHeaders[skey]= this.accesUrlFrom.value[key];
+    for (const key of this.headers) {
+      requestHeaders[key] = this.accesUrlFrom.value[key];
     }
-    
+
+    for (const key of this.query_missing_params) {
+      newUrl = newUrl.replace(key, this.accesUrlFrom.value[key])
+    }
+
+    console.log("Preparing to send URL & HEADERS");
     console.log(requestHeaders);
-    
-    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(RoutUrl, requestHeaders ).catch((error) => {
+    console.log(newUrl);
+
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(newUrl, requestHeaders).catch((error) => {
       this.snack.error("Ther has been a problem! " + error.message);
       this.showQueryRes = false;
     });
     this.showQueryRes = true;
-    this.q_res =  JSON.stringify(rez,undefined, "\t");
+    this.q_res = JSON.stringify(rez, undefined, "\t");
   }
 
-  public async clickMe(row:Visualize): Promise<void> {
+  public async clickMe(row: Visualize): Promise<void> {
 
     const myobj = this.userForm.value;
     myobj.language = Languages.languages[0].value;
-    console.log('row-->',row);
+    console.log('row-->', row);
     myobj.path = row.url
 
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
@@ -156,8 +175,24 @@ export class HomeComponent implements OnInit {
     });
 
     this.manageForm(rez);
-
   }
 
+  private parseUrl(url: string): SegmentedUrl {
+    const data: string[] = [];
+    let replaced = `${url}`;
+    let index = 0;
+    while (true) {
+      if (replaced.indexOf("{you_need_to_add_it}") > -1) {
+        const paramName = `{required_parameter_${index}}`;
+        replaced = replaced.replace("{you_need_to_add_it}", paramName);
+        data.push(paramName);
+        index++;
+      }
+      else {
+        break;
+      }
+    }
 
+    return new SegmentedUrl(data, replaced);
+  }
 }

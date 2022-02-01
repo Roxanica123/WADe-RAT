@@ -86,12 +86,12 @@
 
         <mat-form-field appearance="fill" class="mat-form-field-2">
           <mat-label>HTTP Verb</mat-label>
-          <input type="text" matInput required formControlName="RoutVerb" [defaultValue]="show_query[0].http_verb">
+          <input type="text" matInput required formControlName="RoutVerb">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="mat-form-field-2">
           <mat-label>Route</mat-label>
-          <input type="text" matInput required formControlName="RoutUrl" [defaultValue]="show_query[0].url">
+          <input type="text" matInput required formControlName="RoutUrl">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="mat-form-field-2">
@@ -102,6 +102,11 @@
         <mat-form-field *ngFor="let head of headers " appearance="fill" class="mat-form-field-2">
           <mat-label>{{head}}</mat-label>
           <input type="text" matInput formControlName={{head}}>
+        </mat-form-field>
+
+        <mat-form-field *ngFor="let param of query_missing_params " appearance="fill" class="mat-form-field-2">
+          <mat-label>{{param}}</mat-label>
+          <input type="text" matInput formControlName={{param}}>
         </mat-form-field>
 
         <button mat-raised-button type="submit" [disabled]="!accesUrlFrom.valid" color="primary">Send</button>
