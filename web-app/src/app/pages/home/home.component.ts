@@ -39,7 +39,11 @@ export class HomeComponent implements OnInit {
 
   public showTable: boolean = false;
   public showForm: boolean = false;
+  public showQueryRes: boolean = false;
+
   public headers: string[] = [];
+
+  public q_res:string="";
 
   userForm = this.formBuilder.group({
     openApiDocumentUrl: ['', Validators.required],
@@ -134,10 +138,10 @@ export class HomeComponent implements OnInit {
     
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(RoutUrl, requestHeaders ).catch((error) => {
       this.snack.error("Ther has been a problem! " + error.message);
+      this.showQueryRes = false;
     });
-
-    console.log(rez)
-
+    this.showQueryRes = true;
+    this.q_res =  JSON.stringify(rez,undefined, "\t");
   }
 
   public async clickMe(row:Visualize): Promise<void> {
