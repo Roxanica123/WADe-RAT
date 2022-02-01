@@ -1,393 +1,484 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-      <title>RAT-Scholarly HTML</title>
-      <link rel="stylesheet" href="https://w3c.github.io/scholarly-html/css/scholarly.css">
-      <script src="https://w3c.github.io/scholarly-html/js/scholarly.min.js"></script>
 
-   </head>
-   <body prefix="schema: http://schema.org">
-      <header>
-         <h1>Rest API Interactive Tool</h1>
-      </header>
-      <div role="contentinfo">
-         <dl>
-            <dt>Authors</dt>
-            <dd>
-               Roxana Irimia
-            </dd>
-            <dd>
-               Milea Robert
-            </dd>
-            <dt>License</dt>
-            <dd>
-               <a href="https://opensource.org/licenses/MIT">MIT</a>
-            </dd>
-            <dt>Github</dt>
-            <dd>
-               <a href="https://github.com/DuArms/TAIP-2021-2022-PROIECT">GitHub repo</a>
-            </dd>
-            <dt>Project video</dt>
-            <dd>
-               <a href="https://www.youtube.com/watch?v=F5lwk6FsPrw&list=RDF5lwk6FsPrw&start_radio=1">Video link</a>
-            </dd>
-         </dl>
-      </div>
-      <section typeof="sa:Abstract" id="abstract" role="doc-abstract">
-         <h2>Project abstract</h2>
-         <section typeof="sa:Requirements" id="Requirements">
-            <h3>Requirements</h3>
-            <p class="info">Develop a Web tool (framework) using natural language constructs to interact to a <a href="https://github.com/marmelab/awesome-rest" title="A collaborative list of resources about REST APIs">REST API</a>. The tool will (re)use knowledge model(s) to learn the proper concepts exposed by the <a href="https://www.openapis.org/" title="About OpenAPI">OpenAPI</a> document describing this API (e.g., resources, their inputs and outputs) to facilitate a proper text/voice-based interaction. Test and demonstrate the system's features by choosing minimum two <a href="https://apis.guru/browse-apis/" title="A list of public REST APIs">public REST APIs</a>. Inspiration: <a href="https://naturalsql.com/" title="Details">Photon</a> (article: <a href="https://arxiv.org/abs/2007.15280" title="Read the article">A Robust Cross-Domain Text-to-SQL System</a>). Bonus: provide multi-lingual support.</p>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+   <title>RAT-Scholarly HTML</title>
+   <link rel="stylesheet" href="https://w3c.github.io/scholarly-html/css/scholarly.css">
+   <script src="https://w3c.github.io/scholarly-html/js/scholarly.min.js"></script>
+
+</head>
+
+<body prefix="schema: http://schema.org">
+   <header>
+      <h1>Rest API Interactive Tool</h1>
+   </header>
+   <div role="contentinfo">
+      <dl>
+         <dt>Authors</dt>
+         <dd>
+            Roxana Irimia
+         </dd>
+         <dd>
+            Milea Robert
+         </dd>
+         <dt>License</dt>
+         <dd>
+            <a href="https://opensource.org/licenses/MIT">MIT</a>
+         </dd>
+         <dt>Github</dt>
+         <dd>
+            <a href="https://github.com/DuArms/TAIP-2021-2022-PROIECT">GitHub repo</a>
+         </dd>
+         <dt>Project video</dt>
+         <dd>
+            <a href="https://www.youtube.com/watch?v=F5lwk6FsPrw&list=RDF5lwk6FsPrw&start_radio=1">Video link</a>
+         </dd>
+      </dl>
+   </div>
+   <section typeof="sa:Abstract" id="abstract" role="doc-abstract">
+      <h2>Project abstract</h2>
+      <section typeof="sa:Requirements" id="Requirements">
+         <h3>Requirements</h3>
+         <p class="info">Develop a Web tool (framework) using natural language constructs to interact to a <a
+               href="https://github.com/marmelab/awesome-rest"
+               title="A collaborative list of resources about REST APIs">REST API</a>. The tool will (re)use knowledge
+            model(s) to learn the proper concepts exposed by the <a href="https://www.openapis.org/"
+               title="About OpenAPI">OpenAPI</a> document describing this API (e.g., resources, their inputs and
+            outputs) to facilitate a proper text/voice-based interaction. Test and demonstrate the system's features by
+            choosing minimum two <a href="https://apis.guru/browse-apis/" title="A list of public REST APIs">public REST
+               APIs</a>. Inspiration: <a href="https://naturalsql.com/" title="Details">Photon</a> (article: <a
+               href="https://arxiv.org/abs/2007.15280" title="Read the article">A Robust Cross-Domain Text-to-SQL
+               System</a>). Bonus: provide multi-lingual support.</p>
+      </section>
+      <section typeof="sa:Propoused_solution" id="Propoused_solution">
+         <h3>Proposed solution</h3>
+         <p>
+            We propose a multi-service application which will aggregate three micro-service and a user-friendly
+            interface. These components and the overall structure can be seen in the diagram below.
+         </p>
+         <img id="c4" src="diagrams/c4-system-diagram.png" alt="C4 diagram" style="width:100%;">
+         <p>
+            The user interface will allow introducing the URL to a Open API document and a sentence that describes the
+            request that the user wants to make such as "From the album that has the identifier 3, get all the tracks.".
+         </p>
+
+         <section id="gateway_proposed_solution">
+            <h4> Gateway Service </h4>
+            <p>
+               The web application will send a request containing this information to a service we named “gateway”
+               that
+               will delegate the tasks to the other two services.
+            </p>
          </section>
-         <section typeof="sa:Propoused_solution" id="Propoused_solution">
-            <h3>Proposed solution</h3>
+
+         <section id="preprocessing_proposed_solution">
+            <h4> Preprocessing Service </h4>
             <p>
-               We propose a multi-service application which will aggregate a multitude of micro-service and will provide a user-friendly interface. 
+               The preprocessing service will download the Open API document from the provided link and curate it
+               in
+               order to contain only the information that we consider necessary: the paths, servers and
+               components.
             </p>
             <p>
-               The interface should be used to input a link of an OpenAPI and a sentence that describes the wanted interaction with the specified API.            
+               The preprocessing service will also use a pretrained NLP model provided by <a
+                  href="https://spacy.io/">Spacy.io</a> in order to extract the tokens from the sentence. Each
+               token
+               is described by a part of speech and a dependency. We use this information to extract the HTTP
+               method
+               and the target resource that the user wants. The implementation details regarding the process will
+               be
+               explained in the <a href="#sa:Implementation_details">next section</a>.
+            </p>
+         </section>
+
+         <section id="processing_proposed_solution">
+            <h4> Natural Language Processing Service </h4>
+            <p>
+               The Natural Language processing service will receive the preprocessed information and identify the
+               exact path from the Open API document based on the extracted target resource (and it’s parent
+               resource).<br>
+               After the exact path is identified, the tokens are parsed in order to identify the parameters that
+               the
+               user specified for the header, path or query. The implementation details regarding the process will
+               be
+               explained in the <a href="#sa:Implementation_details">next section</a>
             </p>
             <p>
-               We will have a central API point that will play the role of the static delivery hub and of a gateway for the rest of the services. The services we will use are:
-            <ul>
-               <li>
-                  <h4> Translation Service </h4>
-                  <p>
-                     Will take the natural language query and will translate it to english. English is the language used in most OpenAPi descriptions.
-                  </p>
-               </li>
-               <li>
-                  <h4> Preprocessing Service </h4>
-                  <p>
-                     Will interrogate the OpenAPI and process the response in order to extract the keywords. This service will attempt to create a mapping from english words to API routes.
-                  </p>
-               </li>
-               <li>
-                  <h4> NaturalLanguage Service </h4>
-                  <p>
-                     Will use the information provided by Translation Service and Preprocessing Service in order  to compute a query. We will try to use the knowledge we have in order to create an API call and return it to the user.
-                  </p>
-               </li>
-            </ul>
+               The processing results will be returned to the gateway and then to the web application.
+            </p>
          </section>
       </section>
-      <section id="sa:Implementation_details">
-         <!-- review? -->
-         <h2>Implementation details</h2>
-         <section id="Programming_languages">
-            <h3> Programming languages </h3>
-            <p>
+   </section>
+   <section id="sa:Implementation_details">
+      <!-- review? -->
+      <h2>Implementation details</h2>
+      <section id="Programming_languages">
+         <h3> Programming languages </h3>
+         <section id="python">
             <h4> Python </h4>
             <p>
                We chose Python for it's easy to use and plentiful Machine Learning libraries.
             </p>
+         </section>
+         <section id="javascript">
             <h4> JavaScript </h4>
             <p>
-               We chose JavaScript for the front-end part of the application. We intend to use a JS framework called
-               Angular in order to create a responsive and modern user interface.
-            </p>
-            <h4> Typescript </h4>
-            <p>
-               Additionally, for the services that do not require additional processing libraries, we opted for Typescript for all the JavaScript benefits but with 
-               the addition of readability and reliability provided by the support for types.
+               We chose JavaScript for the gateway service as it does not require any additional processing libraries.
+               For
+               the web application,
+               we opted for <a href="https://angular.io/">Angular</a> order to create a responsive and modern user
+               interface and <a href="https://www.typescriptlang.org/">Typescript</a> for all the JavaScript benefits
+               but
+               with the addition of readability and reliability provided by the support for types.
             </p>
          </section>
-
-         <section id="arhitecture">
-            <h3> Architecture </h3>
-            <p>The application of our application can be seen in the image below. </p>
-            <p>
-               <img src="https://raw.githubusercontent.com/Roxanica123/WADe-RAT/main/docs/diagrams/c4-system-diagram.png" alt="C4 diagram" width="100%">
-            </p>
-               <h4> Angular Frontend application</h4>
-               <p> The user will interact with an Angular front-end application where he/she can specify the link to an OpenAPI document and the sentence that describes the wanted
-               interaction with the specified API. </p>
-               <h4> API Gateway</h4>
-               <p>The front-end application will send the request to an orchestration service. This service, contained in a Typescript Azure Function, is responsible for managing the execution steps of our proposed solution.</p>
-               <p>
-                  <img src="https://raw.githubusercontent.com/Roxanica123/WADe-RAT/main/docs/diagrams/uml-gateway.png" alt="gateway UML diagram" width="100%">
-               </p>
-               <h4> Translation Service</h4>
-               <p>If the translation of the sentence is required, it will send a request to the translation service, also a Typescript Azure Function, that will directly interact with the Google Translate API and translate the sentence.</p>
-               <h4> Preprocessing and Natural Language Processing services</h4>
-               <p>After translation, the orchestration service interacts with the preprocessing service and then the processing service in order to transform the input into the wanted request, both Python Azure Functions. </p>
-
-         </section>
-
       </section>
-      <section id="routes">
-         <h2> API routes </h2>
-         <section id="Gateway_API">
-            <h3> Gateway API</h3>
+
+      <section id="arhitecture">
+         <h3> Architecture and implementation</h3>
+         <p>The overall services architecture was already shown in the <a href="#c4">previous section</a>. In this
+            section we will take each service and present it's architecture and parts of interest.</p>
+
+         <section id="gateway">
+            <h4> API Gateway</h4>
+            <p>The front-end application will send the request to an orchestration service. This service, contained in a
+               JavaScript Azure Function, is responsible for managing the execution steps of our proposed solution.</p>
             <p>
-            <ul>
-               <li>
-                  <b> POST : /process </b>
-                  <ul>
-                     <li>
-                        Query parameters : empty
-                     </li>
-                     <li>
-                        Body: <code>
+               <img src="diagrams/uml-gateway.png" alt="gateway UML diagram" style="width:100%;">
+            </p>
+            This service will validate the input and send the validated input to the preprocessing service. If the
+            preprocessing step was successful,
+            the result will be passed to the processing service. The final result received from the processing service
+            will
+            be returned to the web application.
+         </section>
+         <section id="preprocessing">
+            <h4> Preprocessing service </h4>
+            The general structure of this service can be seen in the diagram below. We will focus on the implementation
+            details of the Information Extractor component.
+            <p>
+               <img src="diagrams/uml-preprocessing.png" alt="preprocessing UML diagram" style="width:100%;">
+            </p>
+            <p>For the tokenization and sentence information extraction we used a prebuilt CNN model provided by Spacy.
+               Specifically, spacy will process the sentence and extract for each word or punctuation it’s part of
+               speech
+               and
+               the dependencies. For the sentence "I want to get the available seeds, for the recommendations." the
+               result
+               can be visualized in the image below.</p>
+            <p>
+               <img src="diagrams/sentence.svg" alt="spacy result for sentence" style="width:100%;">
+            </p>
+            <p>Firstly, in order to identify the wanted HTTP method we want to find the action that the user wants to
+               make
+               on the resource. This means searching for the first verb in the dependency tree that has as a direct
+               child a
+               noun. The resource the user targets is this first noun child.
+               <br>
+               Moreover we can identify the compound resources, "seeds" will be identified as the target resource, but
+               we
+               can also identify the nouns and adjectives that are childs of this target resource, “available seeds”.
+            </p>
+            <p>After the target resource is determined, we also support identifying the parent resource (or compound
+               parent
+               resource), a child noun of the verb token that is preceded by an adposition. The parent resource
+               identifier
+               will also be identified and saved.</p>
+            <p>The rest of the nouns, numerals, adjectives and proper nouns placed between the target resource and the
+               parent resource, or the end of the sentence. This approach was used mainly because the language model is
+               not
+               100% reliable and it has difficuties if identifying the correct dependencies, we need a level of
+               flexibility
+               in mapping the parameters provided by users.</p>
+            <p>These information, the tokens, target resource, parent resource and the possible parameters will be sent
+               to
+               the processing service together with the useful sections of the open API document.</p>
+         </section>
+         <section id="processing">
+            <h4> Natural Language Processing service </h4>
+            <p>The NLP processing service will map the extracted token and information to the open API document.</p>
+            <p>We start with finding the path from the API that matches the target resource and the parent resource.
+               Here
+               we take into account the identifier existente, for the parent resource and the target resource also. As a
+               result, we can tell exactly that the user wants the path “/parent/{id}/target” path and not the
+               “/parent/target” path or “/target/{id}” and not “/target”.
+            </p>
+            <p>If a specific path is not identified, we stop the processing and return the paths that contain the target
+               resource as suggestions for the user. In the UI (or API), the user can specify the wanted path and the
+               processing will continue from this point.</p>
+            <p>The next step is processing the parameters specified for the request's headers and query. We iterate
+               through
+               the request parameters from the
+               open API document and try to find them in the "possible parameters" tokens, together with their values.
+               Also,
+               for the required parameters that are not specified by the user, we will add a placeholher. As an example,
+               a
+               sentence such as "From the album that has the identifier 3, get me all the tracks in the market 1, with
+               the
+               limit of 5." the result will be the one in the image below.
+            </p>
+            <p>
+               <img src="diagrams/processing_result.png" alt="processing result for sentence" style="width:100%;">
+            </p>
+            As we can see, if the Open API documents specifies the server, we can add this information to the url in
+            order to provide a complete request. Otherwise, the user can provide it in the UI.
+         </section>
+      </section>
+
+   </section>
+   <section id="routes">
+      <h2> API routes </h2>
+      <section id="Gateway_API">
+         <h3> Gateway API</h3>
+         <p>
+         <ul>
+            <li>
+               <b> POST : /process </b>
+               <ul>
+                  <li>
+                     Query parameters : empty
+                  </li>
+                  <li>
+                     Body: <code>
                            {
                               "openApiDocumentUrl": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json",
                               "sentence": "show me all the photos in gallery 69234652",
-                              "language": "English"
+                              "language": "English",
+                              "path": "/galleries/{id}/photos"
                             }
 
                         </code>
-                     </li>
-                     <li>
-                        Response:
-                        <ul>
-                           <li>
-                              200 Success:
-                              <code>
+                  </li>
+                  <li>
+                     Response:
+                     <ul>
+                        <li>
+                           200 Success:
+                           <code>
                               {
                               "url": "https://tesla.crypto.net/api/gallery",
                               "method": "GET",
-                              "queryParameters": {
-                              "additionalProp1": "string",
-                              "additionalProp2": "string",
-                              "additionalProp3": "string"
-                              },
-                              "body": ""
+                              "headers" : {}
+                              "body": {}
                               }
                               </code>
-                           </li>
-                           <li>
-                              400 Bad input was sent to the API:
-                              <code>
+                        </li>
+                        <li>
+                           400 Bad input was sent to the API:
+                           <code>
                               {
-                              "errorCode": 101,
                               "errorMessage": "The data received is invalid"
                               }
                               </code>
-                           </li>
-                        </ul>
-                     </li>
-                  </ul>
-               </li>
-            </ul>
-         </section>
-         <section id="Preprocessing_API">
-            <h3> Preprocessing API</h3>
-            <p>
-            <ul>
-               <li>
-                  <b>POST /preprocess </b>
-                  <ul>
-                     <li>
-                        Query parameters: empty
-                     
-                        </ul>
-                     </li>
-                     <li>
-                        Body: <code>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+         </ul>
+      </section>
+      <section id="Preprocessing_API">
+         <h3> Preprocessing API</h3>
+         <p>
+         <ul>
+            <li>
+               <b>POST /preprocess </b>
+               <ul>
+                  <li>
+                     Query parameters: empty
+
+               </ul>
+            </li>
+            <li>
+               Body: <code>
                            {
                               "openApiDocumentUrl": "https://petstore.swagger.io/?url=https://api.apis.guru/v2/specs/flickr.com/1.0.0/openapi.json",
                               "sentence": "show me all the photos in gallery 69234652",
                               "language": "English"
                             }
                         </code>
-                     </li>
-                     <li>
-                        Response:
-                        <ul>
-                           <li>
-                              200 Success:
-                              <code>
+            </li>
+            <li>
+               Response:
+               <ul>
+                  <li>
+                     200 Success:
+                     <code>
                                  {
                                     "openApiDocument": "string",
-                                    "resources": [
-                                      "string"
-                                    ],
-                                    "tokens": [
-                                      "string"
-                                    ]
+                                    "sentenceInfo": {
+                                       "tokens": [],
+                                       "target_resource":{},
+                                       "parent_resource": {},
+                                       "method": "string",
+                                       "verb": {},
+                                       "sentence":"string" 
+                                    },
                                   }
                               </code>
-                           </li>
-                           <li>
-                              400 Bad input was sent to the API:
-                              <code>
+                  </li>
+                  <li>
+                     400 Bad input was sent to the API:
+                     <code>
                               {
-                              "errorCode": 101,
                               "errorMessage": "The data received is invalid"
                               }
                               </code>
-                           </li>
-                        </ul>
-                     </li>
-                  </ul>
-               </li>
-            </ul>
-         </section>
-         <section id="Translation_API">
-            <h3> Translation API</h3>
-            <p>
-            <ul>
-               <li>
-                  <b> POST /translate </b>
-                  <ul>
-                     <li>
-                        Query parameters: empty
-                     </li>
-                     <li>
-                        Body: <code>
-                           {
-                              "textLanguage": "Romanian",
-                              "text": "Sper ca acest text sa fie tradus."
-                            }
-                        </code>
-                     </li>
-                     <li>
-                        Response:
-                        <ul>
-                           <li>
-                              200 Success:
-                              <code>
-                              {
-                              "text": "Im hoping this text will be translated."
-                              }
-                              </code>
-                           </li>
-                           <li>
-                              400 Bad input was sent to the API:
-                              <code>
-                              {
-                              "errorCode": 101,
-                              "errorMessage": "The data received is invalid"
-                              }
-                              </code>
-                           </li>
-                        </ul>
-                     </li>
-                  </ul>
-               </li>
-            </ul>
-         </section>
-         <section id="NaturalLanguageProcessing_API">
-            <h3> NaturalLanguageProcessing API</h3>
-            <p>
-            <ul>
-               <li>
-                  <b>POST: /process </b>
-                  <ul>
-                     <li>
-                        Query parameters: No parameters
-                     </li>
-                     <li>
-                        Body:
-                        <code>
+                  </li>
+               </ul>
+            </li>
+         </ul>
+      </section>
+      <section id="NaturalLanguageProcessing_API">
+         <h3> NaturalLanguageProcessing API</h3>
+         <p>
+         <ul>
+            <li>
+               <b>POST: /process </b>
+               <ul>
+                  <li>
+                     Query parameters: No parameters
+                  </li>
+                  <li>
+                     Body:
+                     <code>
                         {
-                        "openApiDocument": "string",
-                        "resources": [
-                        "string"
-                        ],
-                        "tokens": [
-                        "string"
-                        ]
-                        }
+                           "openApiDocument": "string",
+                           "sentenceInfo": {
+                              "tokens": [],
+                              "target_resource":{},
+                              "parent_resource": {},
+                              "method": "string",
+                              "verb": {},
+                              "sentence":"string" 
+                           },
+                         }
                         </code>
-                     </li>
-                     <li>
-                        Response:
-                        <ul>
-                           <li>
-                              200 Success:
-                              <code>
+                  </li>
+                  <li>
+                     Response:
+                     <ul>
+                        <li>
+                           200 Success:
+                           <code>
                               {
                               "url": "https://tesla.crypto.net/api/gallery",
                               "method": "GET",
-                              "queryParameters": {
-                              "additionalProp1": "string",
-                              "additionalProp2": "string",
-                              "additionalProp3": "string"
-                              },
-                              "body": ""
+                              "headers" : {}
+                              "body": {}
                               }
                               </code>
-                           </li>
-                           <li>
-                              400 Bad input was sent to the API:
-                              <code>
+                        </li>
+                        <li>
+                           400 Bad input was sent to the API:
+                           <code>
                               {
-                              "errorCode": 101,
                               "errorMessage": "The data received is invalid"
                               }
                               </code>
-                           </li>
-                        </ul>
-                     </li>
-                  </ul>
-               </li>
-            </ul>
-         </section>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+         </ul>
       </section>
-      <section id="Technologies">
-         <h2> Technologies </h2>
-         <section id="Azure_functions">
-            <h3> Azure functions </h3>
-            <p>
-               Azure Functions is a cloud service available on-demand that provides all the continually
-               updated infrastructure and resources needed to run your applications. 
-               You focus on the pieces of code that matter most to you, and Functions handles the rest.
-               Functions provides serverless compute for Azure. 
-            </p>
-         </section>
-         <section id="Angular">
-            <h3> Angular </h3>
-            <p>
-               Angular is an application design framework and development 
-               platform for creating efficient and sophisticated single-page apps.  
-            </p>
-         </section>
-         <section id="Google_Translate_API">
-            <h3> Cloud Translation API  </h3>
-            <p>
-               Integrates text translation into your website or application. To call this service, we recommend that you use the Google-provided client libraries. If your application needs to use your own libraries to call this service, use the following information when you make the API requests.
-               A Discovery Document is a machine-readable specification for describing and consuming REST APIs. It is used to build client libraries, IDE plugins, and other tools that interact with Google APIs. One service may provide multiple discovery documents. This service provides the following discovery documents:
-            </p>
-         </section>
-         <section id="Git">
-            <h3> Git </h3>
-            <p>
-               Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
-            </p>
-         </section>
-         <section id="scikit-learn">
-            <h3> Scikit-learn </h3>
-            <p>
-               Scikit-learn is a library in Python that provides many unsupervised and supervised learning algorithms. It’s built upon some of the technology we are already familiar with, like NumPy, Pandas, and Matplotlib.
-            </p>
-         </section>
-      </section>
-      <section id="Final_words">
-         <h2> Final words</h2>
+   </section>
+   <section id="Technologies">
+      <h2> Technologies </h2>
+      <section id="Azure_functions">
+         <h3> Azure functions </h3>
          <p>
-            We are eager to implement this project.
-            Updates will come!
+            We wanted to have three services that could easily communicate and scale independently and <a
+               href="https://azure.microsoft.com/en-us/services/functions/#overview">Azure Functions</a>
+            was the easiest way to do so. Each service has its own Azure Function App and communicates with the other
+            services through HTTPS requests. Also the major advantage of this choice is the lack of configuration needed
+            in order to deploy the function in comparison to other possibilities such as a cloud virtual machine or app
+            engine.
+
          </p>
       </section>
-      <section id="biblio-references">
-         <h2>References</h2>
-            <ul>
-               <li><cite>
-                  <a href="https://scikit-learn.org/stable/">Scikit-learn</a>
-                </cite></li>
-                <li><cite>
-                  <a href="https://angular.io/">Angular</a>
-                </cite></li>
-                <li><cite>
-                  <a href="https://www.typescriptlang.org/">Typescript</a>
-                </cite></li>
-                <li><cite>
-                  <a href="https://azure.microsoft.com/en-us/services/functions/">Azure functions</a>
-                </cite></li>
-            </ul>
+      <section id="Angular">
+         <h3> Angular </h3>
+         <p>
+            We wanted to implement a modern and responsive user interface and Angular was the most convenient option due
+            to the <a href="https://azure.microsoft.com/en-us/services/functions/#overview">Angular Material UI
+               component library</a>. This enabled us to focus on the logic of the application but still have an
+            up-to-standard design.
+         </p>
       </section>
-   </body>
+      <section id="Spacy">
+         <h3> Spacy Language Models </h3>
+         <p>
+            We used the <a href="https://spacy.io/models/en">"en_code_web_sm"</a> pretrained model and the <a
+               href="https://spacy.io/api">SpacyAPI</a> as the main NLP component of our project. Spacy breaks the
+            sentence into tokens and then uses a CNN neural network in order to extract the structure of the sencence
+            with it's parts of speech and dependencies. With this information we can create and parse the dependencies
+            graph
+            in order to identify the components of the requst.
+         </p>
+      </section>
+      <section id="Git">
+         <h3> GitHub </h3>
+         <p>
+            For the version control part we used <a href="https://github.com/">GitHub</a> because it is free, easy to
+            use and it allows us to publish a
+            static <a href="https://roxanica123.github.io/WADe-RAT/">site containing our blog</a> and this documnet on
+            <a href="https://pages.github.com/">GitHub Pages</a>.
+         </p>
+      </section>
+   </section>
+   <section id="Future_work">
+      <h2>Future work</h2>
+      <section id="improve-params-body">
+         <h4>Parameters as references in Open API</h4>
+         <p>We currently don't support body parameters because most of them are refferences to a certain schema. This
+            issue
+            could be fixed bu parsing the schema, some properties of the schema can be refferences too. To solve this
+            problem we would have to build and parse an entire tree of properties. This issue is also available for some
+            query parameters.</p>
+      </section>
+      <section id="improve-params-list">
+         <h4>List and Object query parameters</h4>
+         <p>Currently, we do not support query parameters that are a list or an object. This issue can be solved by
+            adding
+            some additional logic. However, we cannot accurately distinguish between a list of values or a name for a
+            next
+            parameters. A solution would be presenting the user some templates that can be used in the sentence in these
+            cases such as "[1, 2, 3]" for lists and "{"prop":"name"}" for objects.</p>
+      </section>
+      <section id="improve-params-model">
+         <h4>Overall model accuracy</h4>
+         <p>Of course, the solution for most of the problems faced in developing the project is because the model used
+            cannot be 100% reliable. A solution that could improve this aspect is developing our own specialised model.
+         </p>
+      </section>
+   </section>
+   <section id="biblio-references">
+      <h2>References</h2>
+      <ul>
+         <li><cite>
+               <a href="https://angular.io/">Angular</a>
+            </cite></li>
+         <li><cite>
+               <a href="https://www.typescriptlang.org/">Typescript</a>
+            </cite></li>
+         <li><cite>
+               <a href="https://azure.microsoft.com/en-us/services/functions/">Azure functions</a>
+            </cite></li>
+         <li>
+            <cite><a href="https://spacy.io/api">Spacy Api Doccumenteation</a></cite>
+         </li>
+         <li>
+            <cite><a href="https://material.angular.io/components/categories">Angular Material Components</a></cite>
+         </li>
+         <li>
+            <cite><a href="https://plantuml.com/class-diagram">Plant UML diagrams</a></cite>
+         </li>
+      </ul>
+   </section>
+</body>
+
 </html>
