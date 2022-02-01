@@ -44,7 +44,6 @@ def filter_by_path_with_identifier(paths, matching_paths, possible_parameters, m
 
 
 def get_path(info, doc):
-    doc["paths"]["/recommendations/{id}/available-genre-seeds"] = []
     paths = doc["paths"].keys()
     matching_paths = list(paths)
     dummy_pattern = ""
