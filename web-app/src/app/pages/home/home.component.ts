@@ -2,6 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { LoadingService } from 'src/app/services/loading.service';
 import { RequestsService } from 'src/app/services/requests.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { MatchReasponse, NoMatchReasponse } from 'src/app/types/dataType';
@@ -41,7 +42,7 @@ export class HomeComponent implements OnInit {
   public table_title: string = ""
   public show_query: Visualize[] = [];
   public query_missing_params: string[] = [];
-
+  public isLoading: boolean = false;
 
   public showTable: boolean = false;
   public showForm: boolean = false;
@@ -65,10 +66,13 @@ export class HomeComponent implements OnInit {
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly requestsService: RequestsService,
-    private readonly snack: SnackService
+    private readonly snack: SnackService,
+    private readonly loading: LoadingService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.loading.observable.subscribe(status => this.isLoading = status);
+  }
 
   private manageForm(rez: MatchReasponse | NoMatchReasponse | any): void {
 
@@ -103,6 +107,8 @@ export class HomeComponent implements OnInit {
           "RoutUrl": segments.url
         }
       )
+
+      this.snack.info("\t\t We found the route for you! \t\t");
     }
 
     if (rez.suggestions) {
@@ -111,7 +117,7 @@ export class HomeComponent implements OnInit {
         this.snack.error("\t\tNo route found!\t\t");
         return;
       }
-
+      this.snack.info("\t\tWe have found several routes! Please choose one\t\t");
       let temp: Visualize[] = []
 
       for (let el of rez.suggestions) {
@@ -123,17 +129,20 @@ export class HomeComponent implements OnInit {
       this.table_title = "Are you looking for one of these routes?"
       this.showTable = true;
     }
-    this.snack.info("\t\tSucces!\t\t");
+ 
   }
 
   public async onSubmit() {
     const myobj = this.userForm.value;
     myobj.language = Languages.languages[0].value;
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
+      this.snack.error(error.error.message);
     });
 
-    this.manageForm(rez);
+    if(rez != undefined ){
+      this.manageForm(rez);
+    }
+
   }
 
 
@@ -156,11 +165,15 @@ export class HomeComponent implements OnInit {
     console.log(newUrl);
 
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(newUrl, requestHeaders).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
+      this.snack.error(error.message);
       this.showQueryRes = false;
     });
-    this.showQueryRes = true;
-    this.q_res = JSON.stringify(rez, undefined, "\t");
+
+    if( rez != undefined){
+      this.showQueryRes = true;
+      this.q_res = JSON.stringify(rez, undefined, "\t");
+    }
+   
   }
 
   public async clickMe(row: Visualize): Promise<void> {
@@ -171,10 +184,12 @@ export class HomeComponent implements OnInit {
     myobj.path = row.url
 
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
+      this.snack.error(error.error.message);
     });
-
-    this.manageForm(rez);
+    if( rez != undefined){
+      this.manageForm(rez);
+    } 
+ 
   }
 
   private parseUrl(url: string): SegmentedUrl {

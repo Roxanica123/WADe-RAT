@@ -1,58 +1,60 @@
-
-form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+form {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-
-.rez{
-    margin-top: 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.rez {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.mat-form-field{
-    width: 60%;
+.mat-form-field {
+  width: 60%;
 }
 
-.mat-form-field-2{
+.mat-form-field-2 {
   width: 100%;
 }
 
 .demo-table {
-    align-items: center;
-    align-self: center;
-    width: 100%;
-  }
-  
-  .mat-row .mat-cell {
-    border-bottom: 1px solid transparent;
-    border-top: 1px solid transparent;
-    cursor: pointer;
-  }
-  
-  .mat-row:hover .mat-cell {
-    border-color: currentColor;
-  }
-  
-  .demo-row-is-clicked {
-    font-weight: bold;
-  }
-
-
-.mat-card{
-    width: 60%;
+  align-items: center;
+  align-self: center;
+  width: 100%;
 }
 
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
 
+.mat-row:hover .mat-cell {
+  border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+
+.mat-card {
+  width: 60%;
+}
 
 pre {
   background-color: ghostwhite;
   border: 1px solid silver;
   padding: 10px 20px;
-  margin: 20px; 
+  margin: 20px;
   word-wrap: break-word;
   white-space: pre-wrap;
-  }
+}
+
+.progress-div {
+  margin-top: 15px;
+  width: 50vw;
+  height: 100px;
+}
