@@ -58,7 +58,7 @@
             We propose a multi-service application which will aggregate three micro-service and a user-friendly
             interface. These components and the overall structure can be seen in the diagram below.
          </p>
-         <img id="c4" src="diagrams/c4-system-diagram.png" alt="C4 diagram" width="100%">
+         <img id="c4" src="diagrams/c4-system-diagram.png" alt="C4 diagram" style="width:100%;">
          <p>
             The user interface will allow introducing the URL to a Open API document and a sentence that describes the
             request that the user wants to make such as "From the album that has the identifier 3, get all the tracks.".
@@ -146,7 +146,7 @@
             <p>The front-end application will send the request to an orchestration service. This service, contained in a
                JavaScript Azure Function, is responsible for managing the execution steps of our proposed solution.</p>
             <p>
-               <img src="diagrams/uml-gateway.png" alt="gateway UML diagram" width="100%">
+               <img src="diagrams/uml-gateway.png" alt="gateway UML diagram" style="width:100%;">
             </p>
             This service will validate the input and send the validated input to the preprocessing service. If the
             preprocessing step was successful,
@@ -159,7 +159,7 @@
             The general structure of this service can be seen in the diagram below. We will focus on the implementation
             details of the Information Extractor component.
             <p>
-               <img src="diagrams/uml-preprocessing.png" alt="preprocessing UML diagram" width="100%">
+               <img src="diagrams/uml-preprocessing.png" alt="preprocessing UML diagram" style="width:100%;">
             </p>
             <p>For the tokenization and sentence information extraction we used a prebuilt CNN model provided by Spacy.
                Specifically, spacy will process the sentence and extract for each word or punctuation it’s part of
@@ -169,7 +169,7 @@
                result
                can be visualized in the image below.</p>
             <p>
-               <img src="diagrams/sentence.svg" alt="spacy result for sentence" width="100%">
+               <img src="diagrams/sentence.svg" alt="spacy result for sentence" style="width:100%;">
             </p>
             <p>Firstly, in order to identify the wanted HTTP method we want to find the action that the user wants to
                make
@@ -206,12 +206,12 @@
                “/parent/target” path or “/target/{id}” and not “/target”.
             </p>
             <p>If a specific path is not identified, we stop the processing and return the paths that contain the target
-               seeds as suggestions for the user. In the UI (or API), the user can specify the wanted path and the
+               resource as suggestions for the user. In the UI (or API), the user can specify the wanted path and the
                processing will continue from this point.</p>
             <p>The next step is processing the parameters specified for the request's headers and query. We iterate
                through
                the request parameters from the
-               open API document and try to find them in the possible parameters tokens, together with their values.
+               open API document and try to find them in the "possible parameters" tokens, together with their values.
                Also,
                for the required parameters that are not specified by the user, we will add a placeholher. As an example,
                a
@@ -220,7 +220,7 @@
                limit of 5." the result will be the one in the image below.
             </p>
             <p>
-               <img src="diagrams/processing_result.png" alt="processing result for sentence" width="100%">
+               <img src="diagrams/processing_result.png" alt="processing result for sentence" style="width:100%;">
             </p>
             As we can see, if the Open API documents specifies the server, we can add this information to the url in
             order to provide a complete request. Otherwise, the user can provide it in the UI.
@@ -330,8 +330,6 @@
                </ul>
             </li>
          </ul>
-         </li>
-         </ul>
       </section>
       <section id="NaturalLanguageProcessing_API">
          <h3> NaturalLanguageProcessing API</h3>
@@ -393,58 +391,74 @@
       <section id="Azure_functions">
          <h3> Azure functions </h3>
          <p>
-            Azure Functions is a cloud service available on-demand that provides all the continually
-            updated infrastructure and resources needed to run your applications.
-            You focus on the pieces of code that matter most to you, and Functions handles the rest.
-            Functions provides serverless compute for Azure.
+            We wanted to have three services that could easily communicate and scale independently and <a
+               href="https://azure.microsoft.com/en-us/services/functions/#overview">Azure Functions</a>
+            was the easiest way to do so. Each service has its own Azure Function App and communicates with the other
+            services through HTTPS requests. Also the major advantage of this choice is the lack of configuration needed
+            in order to deploy the function in comparison to other possibilities such as a cloud virtual machine or app
+            engine.
+
          </p>
       </section>
       <section id="Angular">
          <h3> Angular </h3>
          <p>
-            Angular is an application design framework and development
-            platform for creating efficient and sophisticated single-page apps.
+            We wanted to implement a modern and responsive user interface and Angular was the most convenient option due
+            to the <a href="https://azure.microsoft.com/en-us/services/functions/#overview">Angular Material UI
+               component library</a>. This enabled us to focus on the logic of the application but still have an
+            up-to-standard design.
          </p>
       </section>
-      <section id="Google_Translate_API">
-         <h3> Cloud Translation API </h3>
+      <section id="Spacy">
+         <h3> Spacy Language Models </h3>
          <p>
-            Integrates text translation into your website or application. To call this service, we recommend that you
-            use the Google-provided client libraries. If your application needs to use your own libraries to call this
-            service, use the following information when you make the API requests.
-            A Discovery Document is a machine-readable specification for describing and consuming REST APIs. It is used
-            to build client libraries, IDE plugins, and other tools that interact with Google APIs. One service may
-            provide multiple discovery documents. This service provides the following discovery documents:
+            We used the <a href="https://spacy.io/models/en">"en_code_web_sm"</a> pretrained model and the <a
+               href="https://spacy.io/api">SpacyAPI</a> as the main NLP component of our project. Spacy breaks the
+            sentence into tokens and then uses a CNN neural network in order to extract the structure of the sencence
+            with it's parts of speech and dependencies. With this information we can create and parse the dependencies
+            graph
+            in order to identify the components of the requst.
          </p>
       </section>
       <section id="Git">
-         <h3> Git </h3>
+         <h3> GitHub </h3>
          <p>
-            Git is a free and open source distributed version control system designed to handle everything from small to
-            very large projects with speed and efficiency.
-         </p>
-      </section>
-      <section id="scikit-learn">
-         <h3> Scikit-learn </h3>
-         <p>
-            Scikit-learn is a library in Python that provides many unsupervised and supervised learning algorithms. It’s
-            built upon some of the technology we are already familiar with, like NumPy, Pandas, and Matplotlib.
+            For the version control part we used <a href="https://github.com/">GitHub</a> because it is free, easy to
+            use and it allows us to publish a
+            static <a href="https://roxanica123.github.io/WADe-RAT/">site containing our blog</a> and this documnet on
+            <a href="https://pages.github.com/">GitHub Pages</a>.
          </p>
       </section>
    </section>
-   <section id="Final_words">
-      <h2> Final words</h2>
-      <p>
-         We are eager to implement this project.
-         Updates will come!
-      </p>
+   <section id="Future_work">
+      <h2>Future work</h2>
+      <section id="improve-params-body">
+         <h4>Parameters as references in Open API</h4>
+         <p>We currently don't support body parameters because most of them are refferences to a certain schema. This
+            issue
+            could be fixed bu parsing the schema, some properties of the schema can be refferences too. To solve this
+            problem we would have to build and parse an entire tree of properties. This issue is also available for some
+            query parameters.</p>
+      </section>
+      <section id="improve-params-list">
+         <h4>List and Object query parameters</h4>
+         <p>Currently, we do not support query parameters that are a list or an object. This issue can be solved by
+            adding
+            some additional logic. However, we cannot accurately distinguish between a list of values or a name for a
+            next
+            parameters. A solution would be presenting the user some templates that can be used in the sentence in these
+            cases such as "[1, 2, 3]" for lists and "{"prop":"name"}" for objects.</p>
+      </section>
+      <section id="improve-params-model">
+         <h4>Overall model accuracy</h4>
+         <p>Of course, the solution for most of the problems faced in developing the project is because the model used
+            cannot be 100% reliable. A solution that could improve this aspect is developing our own specialised model.
+         </p>
+      </section>
    </section>
    <section id="biblio-references">
       <h2>References</h2>
       <ul>
-         <li><cite>
-               <a href="https://scikit-learn.org/stable/">Scikit-learn</a>
-            </cite></li>
          <li><cite>
                <a href="https://angular.io/">Angular</a>
             </cite></li>
@@ -454,6 +468,15 @@
          <li><cite>
                <a href="https://azure.microsoft.com/en-us/services/functions/">Azure functions</a>
             </cite></li>
+         <li>
+            <cite><a href="https://spacy.io/api">Spacy Api Doccumenteation</a></cite>
+         </li>
+         <li>
+            <cite><a href="https://material.angular.io/components/categories">Angular Material Components</a></cite>
+         </li>
+         <li>
+            <cite><a href="https://plantuml.com/class-diagram">Plant UML diagrams</a></cite>
+         </li>
       </ul>
    </section>
 </body>
