@@ -141,6 +141,7 @@ export class HomeComponent implements OnInit {
 
     if(rez != undefined ){
       this.manageForm(rez);
+      this.showQueryRes = false;
     }
 
   }
