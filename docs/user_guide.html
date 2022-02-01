@@ -67,14 +67,22 @@
     <section id="User-Interface-Guide">
         <h3>User Interface guide</h3>
         <p>
-            We propose a multi-service application which will aggregate three micro-service and a user-friendly
-            interface. These components and the overall structure can be seen in the diagram below.
+            The home of the application has a form that allows the user to specify the link to the Open API document and
+            a sentence.
         </p>
-        <img id="c4" src="diagrams/c4-system-diagram.png" alt="C4 diagram" style="width:100%;">
-        <p>
-            The user interface will allow introducing the URL to a Open API document and a sentence that describes the
-            request that the user wants to make such as "From the album that has the identifier 3, get all the tracks.".
-        </p>
+        <img id="c11" src="images/ui_home.png" alt="C4 diagram" style="width:100%;">
+        <p>When the both fields are completed, the Invoke Functions buttons will be enabled and the user cand send the
+            data in order to be proccesses</p>
+        <img id="c12" src="images/ui_home_completed.png" alt="C4 diagram" style="width:100%;">
+        <p>The result can be seen in the image below. </p>
+        <img id="c13" src="images/ui_result.png" alt="C4 diagram" style="width:100%;">
+        <p>We also force the user to complete the requred parameters before sending the request.</p>
+        <img id="c14" src="images/ui_result_with_bearer.png" alt="C4 diagram" style="width:100%;">
+        <p>After sending the request, we will display the json received from the API in the page.</p>
+        <img id="c15" src="images/query_result.png" alt="C4 diagram" style="width:100%;">
+        <p>For the suggestions, the user can click on one of the uptions and the inputs will be processed again.</p>
+        <img id="c16" src="images/selections.png" alt="C4 diagram" style="width:100%;">
+        <img id="c17" src="images/after_suggestion.png" alt="C4 diagram" style="width:100%;">
     </section>
 
     <section id="case-studies">
