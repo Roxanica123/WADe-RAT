@@ -1,6 +1,8 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { LoadingService } from 'src/app/services/loading.service';
 import { RequestsService } from 'src/app/services/requests.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { MatchReasponse, NoMatchReasponse } from 'src/app/types/dataType';
@@ -24,6 +26,10 @@ class Visualize {
   }
 }
 
+class SegmentedUrl {
+  constructor(public readonly routeData: string[], public readonly url: string) { }
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -35,11 +41,16 @@ export class HomeComponent implements OnInit {
   public displayedColumns = ["HTTPVerb", "Query"]
   public table_title: string = ""
   public show_query: Visualize[] = [];
-
+  public query_missing_params: string[] = [];
+  public isLoading: boolean = false;
 
   public showTable: boolean = false;
   public showForm: boolean = false;
+  public showQueryRes: boolean = false;
+
   public headers: string[] = [];
+
+  public q_res: string = "";
 
   userForm = this.formBuilder.group({
     openApiDocumentUrl: ['', Validators.required],
@@ -55,36 +66,64 @@ export class HomeComponent implements OnInit {
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly requestsService: RequestsService,
-    private readonly snack: SnackService
+    private readonly snack: SnackService,
+    private readonly loading: LoadingService
   ) { }
 
   ngOnInit(): void {
+    this.loading.observable.subscribe(status => this.isLoading = status);
   }
 
-  private manageForm(rez : MatchReasponse | NoMatchReasponse | any) : void {
+  private  clearForm() {
+    this.accesUrlFrom =  this.formBuilder.group({
+      RoutVerb: ['', Validators.required],
+      RoutUrl: ['', Validators.required],
+      Body: ['']
+    });
 
+    this.showQueryRes = false;
+    this.showTable = false;
+    this.show_query = [];
+    this.query_missing_params =[];
+    this.headers = [];
+    this.q_res = "";
+  }
+
+  private manageForm(rez: MatchReasponse | NoMatchReasponse | any): void {
+    this.clearForm();
+    console.log("Received from Azure Functions:");
     console.log(rez)
 
     this.showForm = false;
     this.showTable = false;
 
     if (rez.url) {
+
+      const segments = this.parseUrl(rez.url);
+
+      if (segments.routeData.length > 0) {
+        this.query_missing_params = segments.routeData.map(x => x);
+        this.query_missing_params.forEach(x => this.accesUrlFrom.addControl(x, new FormControl("", Validators.required)));
+      }
+
       this.displayedColumns = ["HTTPVerb", "Query"];
-      this.show_query = [new Visualize(rez.url, rez.method, rez.headers)];
+      this.show_query = [new Visualize(segments.url, rez.method, rez.headers)];
       this.table_title = "This is the route we think you want."
       this.showForm = true;
 
       this.headers = Object.keys(this.show_query[0].headers);
-      
+
       for (const el of this.headers) {
         this.accesUrlFrom.addControl(el, new FormControl("", Validators.required));
       }
       this.accesUrlFrom.patchValue(
         {
           "RoutVerb": rez.method,
-          "RoutUrl": rez.url
+          "RoutUrl": segments.url
         }
       )
+
+      this.snack.info("\t\t We found the route for you! \t\t");
     }
 
     if (rez.suggestions) {
@@ -93,7 +132,7 @@ export class HomeComponent implements OnInit {
         this.snack.error("\t\tNo route found!\t\t");
         return;
       }
-
+      this.snack.info("\t\tWe have found several routes! Please choose one\t\t");
       let temp: Visualize[] = []
 
       for (let el of rez.suggestions) {
@@ -105,40 +144,86 @@ export class HomeComponent implements OnInit {
       this.table_title = "Are you looking for one of these routes?"
       this.showTable = true;
     }
-    this.snack.info("\t\tSucces!\t\t");
+ 
   }
 
   public async onSubmit() {
     const myobj = this.userForm.value;
     myobj.language = Languages.languages[0].value;
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
+      this.snack.error(error.error.message);
     });
 
-    this.manageForm(rez);
+    if(rez != undefined ){
+      this.manageForm(rez);
+      this.showQueryRes = false;
+    }
+
   }
 
 
   public async onSend() {
-    const {Body,RoutUrl,RoutVerb} = this.accesUrlFrom.value;
+    const { Body, RoutUrl, RoutVerb } = this.accesUrlFrom.value;
+    let newUrl = `${RoutUrl}`;
 
-  
+    let requestHeaders: any = { 'Content-Type': 'application/json' };
+
+    for (const key of this.headers) {
+      requestHeaders[key] = this.accesUrlFrom.value[key];
+    }
+
+    for (const key of this.query_missing_params) {
+      newUrl = newUrl.replace(key, this.accesUrlFrom.value[key])
+    }
+
+    console.log("Preparing to send URL & HEADERS");
+    console.log(requestHeaders);
+    console.log(newUrl);
+
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(newUrl, requestHeaders).catch((error) => {
+      this.snack.error(error.message);
+      this.showQueryRes = false;
+    });
+
+    if( rez != undefined){
+      this.showQueryRes = true;
+      this.q_res = JSON.stringify(rez, undefined, "\t");
+    }
+   
   }
 
-  public async clickMe(row:Visualize): Promise<void> {
+  public async clickMe(row: Visualize): Promise<void> {
 
     const myobj = this.userForm.value;
     myobj.language = Languages.languages[0].value;
-    console.log('row-->',row);
+    console.log('row-->', row);
     myobj.path = row.url
 
     const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.post<MatchReasponse | NoMatchReasponse>(environment.gatewayURL, myobj).catch((error) => {
-      this.snack.error("Ther has been a problem! " + error.message);
+      this.snack.error(error.error.message);
     });
-
-    this.manageForm(rez);
-
+    if( rez != undefined){
+      this.manageForm(rez);
+    } 
+ 
   }
 
+  private parseUrl(url: string): SegmentedUrl {
+    const data: string[] = [];
+    let replaced = `${url}`;
+    let index = 0;
+    while (true) {
+      if (replaced.indexOf("{you_need_to_add_it}") > -1) {
+        const paramName = `{required_parameter_${index}}`;
+        replaced = replaced.replace("{you_need_to_add_it}", paramName);
+        data.push(paramName);
+        index++;
+      }
+      else {
+        break;
+      }
+    }
 
+    return new SegmentedUrl(data, replaced);
+  }
 }
