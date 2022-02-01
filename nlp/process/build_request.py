@@ -61,7 +61,9 @@ def get_path(info, doc):
     path = filter_by_path_with_identifier(doc["paths"], matching_paths, info["possible_params"], info["method"])
     if path == "":
         return {"suggestions": [p for p in paths if
-                                re.match(f".*{info['target_resource']['target']['lemma']}.*", p.lower())]}
+                                re.match(f".*{info['target_resource']['target']['lemma']}.*", p.lower()) or re.match(
+                                    f".*{get_raw_input(info['target_resource']['target'], info['sentence'])}.*",
+                                    p.lower())]}
     return path
 
 
