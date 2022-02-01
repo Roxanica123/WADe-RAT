@@ -74,8 +74,23 @@ export class HomeComponent implements OnInit {
     this.loading.observable.subscribe(status => this.isLoading = status);
   }
 
-  private manageForm(rez: MatchReasponse | NoMatchReasponse | any): void {
+  private  clearForm() {
+    this.accesUrlFrom =  this.formBuilder.group({
+      RoutVerb: ['', Validators.required],
+      RoutUrl: ['', Validators.required],
+      Body: ['']
+    });
 
+    this.showQueryRes = false;
+    this.showTable = false;
+    this.show_query = [];
+    this.query_missing_params =[];
+    this.headers = [];
+    this.q_res = "";
+  }
+
+  private manageForm(rez: MatchReasponse | NoMatchReasponse | any): void {
+    this.clearForm();
     console.log("Received from Azure Functions:");
     console.log(rez)
 
