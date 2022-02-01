@@ -122,7 +122,22 @@ export class HomeComponent implements OnInit {
   public async onSend() {
     const {Body,RoutUrl,RoutVerb} = this.accesUrlFrom.value;
 
-  
+    
+    let requestHeaders: Object = { 'Content-Type': 'application/json'};
+
+    for( const key of this.headers){
+      let skey = key as keyof typeof requestHeaders;
+      requestHeaders[skey]= this.accesUrlFrom.value[key];
+    }
+    
+    console.log(requestHeaders);
+    
+    const rez: MatchReasponse | NoMatchReasponse | any = await this.requestsService.getWithHeaders<MatchReasponse | NoMatchReasponse>(RoutUrl, requestHeaders ).catch((error) => {
+      this.snack.error("Ther has been a problem! " + error.message);
+    });
+
+    console.log(rez)
+
   }
 
   public async clickMe(row:Visualize): Promise<void> {

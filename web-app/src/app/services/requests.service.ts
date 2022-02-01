@@ -17,4 +17,10 @@ export class RequestsService {
   public post<T>(url: string, data: any): Promise<any> {
     return lastValueFrom(this.http.post<T>(url, data, { headers: this.headers }));
   }
+
+  public getWithHeaders<T>(url: string, h:any): Promise<any> {
+    return lastValueFrom(this.http.get<T>(url, { headers: h }));
+  }
+
+
 }
